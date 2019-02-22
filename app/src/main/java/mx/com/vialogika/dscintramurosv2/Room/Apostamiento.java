@@ -59,6 +59,18 @@ public class Apostamiento {
         return apostamiento;
     }
 
+    public void update(Apostamiento apostamiento){
+        this.plantillaPlaceId = apostamiento.getPlantillaPlaceId();
+        this.plantillaPlaceClientId = apostamiento.getPlantillaPlaceClientId();
+        this.plantillaPlaceApostamientoName = apostamiento.getPlantillaPlaceApostamientoName();
+        this.plantillaPlaceApostamientoAlias = apostamiento.getPlantillaPlaceApostamientoAlias();
+        this.plantillaPlaceType = apostamiento.getPlantillaPlaceType();
+        this.plantillaPlaceSiteId = apostamiento.getPlantillaPlaceSiteId();
+        this.plantillaPlaceGuardsRequired = apostamiento.getPlantillaPlaceGuardsRequired();
+        this.plantillaPlaceStatus = apostamiento.isPlantillaPlaceStatus();
+        this.plantillaPlaceConsExp = apostamiento.getPlantillaPlaceConsExp();
+    }
+
     public int getLocalId() {
         return localId;
     }

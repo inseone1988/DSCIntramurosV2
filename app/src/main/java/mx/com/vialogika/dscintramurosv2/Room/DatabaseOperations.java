@@ -27,7 +27,7 @@ public class DatabaseOperations {
         return dbo;
     }
 
-    public void SyncGuards(final List<Guard> guards) {
+    public void SyncGuards(final List<Guard> guards,boolean downloadPictures) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -74,6 +74,32 @@ public class DatabaseOperations {
                     }
                 }
                 String message = String.valueOf(updated)+": Personas actualizados, "+String.valueOf(created)+": Personas creados";
+                Log.d("Room",message);
+            }
+        }).start();
+    }
+
+    public void SyncApostamientos(final  List<Apostamiento> apostamientos){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int updated = 0;
+                int created = 0;
+                for (int i = 0; i < apostamientos.size(); i++) {
+                    Apostamiento current = apostamientos.get(i);
+                    Apostamiento existent = db.apostamientoDao().getApostamientoById(current.getPlantillaPlaceId());
+                    if (existent != null){
+                        existent.update(current);
+                        long saved = db.apostamientoDao().save(existent);
+                        if (saved != 0){
+                            updated += 1;
+                        }
+                    }else{
+                        db.apostamientoDao().save(current);
+                        created += 1;
+                    }
+                }
+                String message = String.valueOf(updated)+": Apostamientos actualizados, "+String.valueOf(created)+": Apostamientos creados";
                 Log.d("Room",message);
             }
         }).start();

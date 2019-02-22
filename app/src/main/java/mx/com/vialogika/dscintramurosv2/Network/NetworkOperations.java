@@ -81,7 +81,7 @@ public class NetworkOperations {
                     for (int i = 0; i <pPayload.length(); i++) {
                         pResponse.add(new Person(pPayload.getJSONObject(i)));
                     }
-                    dbo.SyncGuards(gResponse);
+                    dbo.SyncGuards(gResponse,false);
                     dbo.SyncPersons(pResponse);
                 }catch(JSONException e){
                     e.printStackTrace();
@@ -94,10 +94,6 @@ public class NetworkOperations {
             }
         });
         rq.add(jor);
-    }
-
-    public void syncPersons(){
-
     }
 
     public interface NetworkRequestCallbacks{
