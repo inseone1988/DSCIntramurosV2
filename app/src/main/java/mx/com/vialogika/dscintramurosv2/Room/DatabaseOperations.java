@@ -2,14 +2,21 @@ package mx.com.vialogika.dscintramurosv2.Room;
 
 import android.arch.persistence.room.Room;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class DatabaseOperations {
 
     private static volatile DatabaseOperations dbo;
     private static          AppDatabase        db;
+    private static Handler handler = new Handler(Looper.getMainLooper());
 
     private DatabaseOperations(Context context) {
 
@@ -17,7 +24,9 @@ public class DatabaseOperations {
 
     public static DatabaseOperations getInstance(Context context) {
         if (db == null) {
-            db = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "Database").build();
+            db = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "Database")
+                    .fallbackToDestructiveMigration()
+                    .build();
         }
         if (dbo == null) {
             synchronized (DatabaseOperations.class) {
@@ -103,5 +112,49 @@ public class DatabaseOperations {
                 Log.d("Room",message);
             }
         }).start();
+    }
+
+    public void getGroupData(final String grupo,final backgroundOperation cb){
+        Calendar c = Calendar.getInstance();
+        final String from = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(c.getTime());
+        c.add(Calendar.DAY_OF_MONTH,1);
+        final String to = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).format(c.getTime());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int gReported = db.plantillaDao().getEdoGroupCount(from,to,grupo);
+                int gRequired = db.apostamientoDao().getEdoRequired();
+                int[] reported = new int[]{gReported,gRequired};
+                cb.onOperationFinished(reported);
+            }
+        }).start();
+    }
+
+    public void getReportedGroups(final backgroundOperation cb,final UIThreadOperation uiop){
+        Calendar c = Calendar.getInstance();
+        final String from = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(c.getTime());
+        c.add(Calendar.DAY_OF_MONTH,1);
+        final String to = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).format(c.getTime());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final String[] reported = db.plantillaDao().getEdoFuerzaTurnosReported(from,to);
+                cb.onOperationFinished(reported);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        uiop.onOperationFinished(reported);
+                    }
+                });
+            }
+        }).start();
+    }
+
+    public interface backgroundOperation{
+        void onOperationFinished(Object callbackResult);
+    }
+
+    public interface UIThreadOperation{
+        void onOperationFinished(@Nullable Object callbackResult);
     }
 }

@@ -13,4 +13,7 @@ public interface ApostamientoDao {
 
     @Query("SELECT * FROM Apostamientos WHERE plantillaPlaceId = :id")
     Apostamiento getApostamientoById(int id);
+
+    @Query("SELECT SUM(plantillaPlaceGuardsRequired) FROM apostamientos")
+    int getEdoRequired();
 }

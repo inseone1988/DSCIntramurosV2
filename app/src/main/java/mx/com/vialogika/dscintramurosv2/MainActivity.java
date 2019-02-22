@@ -2,11 +2,15 @@ package mx.com.vialogika.dscintramurosv2;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -17,58 +21,65 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 
 import mx.com.vialogika.dscintramurosv2.Network.NetworkOperations;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,PlantillaView.OnFragmentInteractionListener {
 
     private NetworkOperations ntwop;
+    private FrameLayout       fragmentContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        loadfragment(PlantillaView.newInstance("",""));
         getItems();
         setupDrawer();
         ntwop = NetworkOperations.getInstance(this);
         syncGuards();
     }
 
-    private void getItems(){
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(onClickListener);
+    private void getItems() {
+        fragmentContainer = findViewById(R.id.fragment_container);
     }
 
     private View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            switch(v.getId()){
-                case R.id.fab:
-                    Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
+            switch (v.getId()) {
+                default:
                     break;
             }
         }
     };
 
-    private void syncGuards(){
-        if (!hasPermission()){
+    private void syncGuards() {
+        if (!hasPermission()) {
             askPermission();
             return;
         }
         ntwop.SyncGuards(1);
     }
 
-    private void askPermission(){
-        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.INTERNET},150);
+    private void askPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, 150);
     }
 
-    private boolean hasPermission(){
+    private void loadfragment(Fragment fragment) {
+        FragmentManager     fragmentManager     = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.fragment_container, fragment)
+                .commit();
+    }
+
+    private boolean hasPermission() {
         return ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED;
     }
 
-    private void setupDrawer(){
+    private void setupDrawer() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -82,9 +93,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch(requestCode){
+        switch (requestCode) {
             case 150:
-                if (grantResults.length >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     syncGuards();
                 }
                 break;
@@ -128,23 +139,35 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        switch(id){
+            case R.id.nav_camera:
+                PlantillaView plantillaView = PlantillaView.newInstance("","");
+                loadfragment(plantillaView);
+                break;
+            case R.id.nav_gallery:
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+                break;
+            case R.id.nav_slideshow:
 
-        } else if (id == R.id.nav_slideshow) {
+                break;
+            case R.id.nav_manage:
 
-        } else if (id == R.id.nav_manage) {
+                break;
+            case R.id.nav_share:
 
-        } else if (id == R.id.nav_share) {
+                break;
+            case R.id.nav_send:
 
-        } else if (id == R.id.nav_send) {
-
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }

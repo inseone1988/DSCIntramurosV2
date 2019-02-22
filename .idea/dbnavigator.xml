@@ -24,8 +24,11 @@
     <autoscroll-from-editor value="true" />
     <show-object-properties value="true" />
     <loaded-nodes>
+      <connection connection-id="ddaa925b-519a-4275-8f25-04c31700e3cd">
+        <schema name="main" object-types="view, table" />
+      </connection>
       <connection connection-id="3ccfc993-0ccb-4795-a984-19fc11724f72">
-        <schema name="vialogik_dscic" object-types="table, function, procedure, view" />
+        <schema name="vialogik_dscic" object-types="table, procedure, index, view, column, function, constraint, dataset trigger" />
       </connection>
     </loaded-nodes>
   </component>
@@ -34,7 +37,7 @@
       <console name="Connection" type="STANDARD" schema="main" session="Main" />
     </connection>
     <connection id="3ccfc993-0ccb-4795-a984-19fc11724f72">
-      <console name="vialogik" type="STANDARD" schema="vialogik_dscic" session="Main" />
+      <console name="vialogik" type="STANDARD" schema="" session="Main" />
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
@@ -164,7 +167,7 @@
           <description value="" />
           <database-type value="MYSQL" />
           <config-type value="BASIC" />
-          <database-version value="9999.0" />
+          <database-version value="5.6" />
           <driver-source value="BUILTIN" />
           <driver-library value="" />
           <driver value="" />
