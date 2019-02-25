@@ -13,7 +13,7 @@
         android:textSize="18sp" />
 
     <Spinner
-        android:id="@+id/spinner"
+        android:id="@+id/plantilla_grupo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:entries="@array/grupos" />
@@ -26,7 +26,7 @@
         android:textSize="18sp" />
 
     <Spinner
-        android:id="@+id/spinner2"
+        android:id="@+id/plantilla_turno"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:entries="@array/turnos" />

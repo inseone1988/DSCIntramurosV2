@@ -5,6 +5,8 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
+import java.util.List;
+
 @Dao
 public interface PlantillaDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -15,4 +17,7 @@ public interface PlantillaDao {
 
     @Query("SELECT DISTINCT(edoFuerzaTurno) FROM plantillas WHERE edoFuerzaDate BETWEEN :start AND :end")
     String[] getEdoFuerzaTurnosReported(String start,String end);
+
+    @Query("SELECT * FROM Plantillas WHERE edoFuerzaDate BETWEEN :start AND :end")
+    List<Plantilla> getSavedPlantillaPlaces(String start,String end,String grupo);
 }

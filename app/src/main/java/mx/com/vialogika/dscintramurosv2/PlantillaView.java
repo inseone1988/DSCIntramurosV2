@@ -1,6 +1,7 @@
 package mx.com.vialogika.dscintramurosv2;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -123,6 +124,20 @@ public class PlantillaView extends Fragment {
 
     private void showGrupoDetailsDialog(){
         DialogGetTurnoDetails dialog = new DialogGetTurnoDetails();
+        dialog.setCallbacks(new DialogGetTurnoDetails.ButtonCallbacks() {
+            @Override
+            public void onPositive(String[] values) {
+                Intent intent = new Intent(getContext(),PlantillaEdit.class);
+                intent.putExtra("grupo",values[0]);
+                intent.putExtra("turno",values[1]);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onNegative() {
+
+            }
+        });
         dialog.show(getFragmentManager(),"GRUPO_EDIT");
     }
 

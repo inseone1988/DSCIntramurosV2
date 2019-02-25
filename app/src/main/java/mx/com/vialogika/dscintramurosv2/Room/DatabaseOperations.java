@@ -150,6 +150,20 @@ public class DatabaseOperations {
         }).start();
     }
 
+    public void getApostamientos(final String grupo,final backgroundOperation cb){
+        Calendar c = Calendar.getInstance();
+        final String from = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(c.getTime());
+        c.add(Calendar.DAY_OF_MONTH,1);
+        final String to = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).format(c.getTime());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final List<Apostamiento> aps = db.apostamientoDao().getAllApostamientos();
+                final List<Plantilla> plantillas = db.plantillaDao().getSavedPlantillaPlaces()
+                cb.onOperationFinished(aps);
+            }
+        }).start();
+    }
     public interface backgroundOperation{
         void onOperationFinished(Object callbackResult);
     }

@@ -221,4 +221,8 @@ public class Person {
     public void setPersonGender(String personGender) {
         this.personGender = personGender;
     }
+
+    public String getPersonFullName(){
+        return this.personName +" "+this.personFname+" "+this.personLname;
+    }
 }
