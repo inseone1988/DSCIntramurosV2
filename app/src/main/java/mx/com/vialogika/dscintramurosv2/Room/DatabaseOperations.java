@@ -12,6 +12,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import mx.com.vialogika.dscintramurosv2.Utils.CryptoHash;
+
 public class DatabaseOperations {
 
     private static volatile DatabaseOperations dbo;
@@ -204,6 +206,20 @@ public class DatabaseOperations {
                 db.plantillaDao().save(plantilla);
             }
         }).start();
+    }
+
+    public void removeguardfromPlantilla(final int gid,final String turno){
+        Calendar c = Calendar.getInstance();
+        final String from = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(c.getTime());
+        c.add(Calendar.DAY_OF_MONTH,1);
+        final String to = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).format(c.getTime());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                db.plantillaDao().deleteGuardFromPlantila(CryptoHash.sha1(String.valueOf(gid)),turno,from,to);
+            }
+        }).start();
+
     }
 
     public static Handler getHandler() {

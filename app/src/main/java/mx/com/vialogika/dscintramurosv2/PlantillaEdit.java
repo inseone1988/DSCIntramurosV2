@@ -1,10 +1,12 @@
 package mx.com.vialogika.dscintramurosv2;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -165,10 +167,32 @@ public class PlantillaEdit extends AppCompatActivity {
     }
 
     private void setupRV(){
-        adapter = new PlantillaReportViewAdapter(dataset);
+        adapter = new PlantillaReportViewAdapter(dataset, new PlantillaReportViewAdapter.AdapterCallbacks() {
+            @Override
+            public void onReportViewClick(int arvpos, int gpos) {
+                int gid = dataset.get(arvpos).getGuards().get(gpos).getGuardId();
+                removeGuardFromPlantilla(arvpos,gpos,gid);
+            }
+        });
         layoutManager = new LinearLayoutManager(this);
         rv.setAdapter(adapter);
         rv.setLayoutManager(layoutManager);
+    }
+
+    private void removeGuardFromPlantilla(final int arvpos,final int gpos,final int gid){
+        AlertDialog.Builder adb = new AlertDialog.Builder(this);
+        adb.setTitle("Confirmacion")
+                .setMessage("Desea quitar el elemento de la plantilla?")
+                .setNegativeButton(android.R.string.cancel,null)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dbo.removeguardfromPlantilla(gid,grupo);
+                        dataset.get(arvpos).getGuards().remove(gpos);
+                        adapter.notifyDataSetChanged();
+                    }
+                })
+                .show();
     }
 
     private View.OnClickListener listener = new View.OnClickListener() {

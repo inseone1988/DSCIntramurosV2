@@ -20,4 +20,7 @@ public interface PlantillaDao {
 
     @Query("SELECT * FROM Plantillas WHERE edoFuerzaDate BETWEEN :start AND :end AND edoFuerzaTurno = :grupo")
     List<Plantilla> getSavedPlantillaPlaces(String start,String end,String grupo);
+
+    @Query("DELETE FROM Plantillas WHERE edoFuerzaGuardId = :gid AND edoFuerzaTurno = :turno AND edoFuerzaDate BETWEEN :from AND :to")
+    void deleteGuardFromPlantila(String gid,String turno,String from,String to);
 }

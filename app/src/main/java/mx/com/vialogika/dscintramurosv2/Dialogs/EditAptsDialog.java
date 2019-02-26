@@ -82,6 +82,8 @@ public class EditAptsDialog extends DialogFragment {
                     public void onClick(View v) {
                         if (validateAsignment()){
                             callback.onAddApostamienti(gId,apId,incidencia);
+                            clearFields();
+                            displayWarnMessage("Guardado");
                         }
                     }
                 });
@@ -90,9 +92,23 @@ public class EditAptsDialog extends DialogFragment {
         return dialog;
     }
 
+    private boolean isValidGuard(int id){
+        for (int i = 0; i < guards.size(); i++) {
+            Guard g  = guards.get(i);
+            if (!g.isAsigned()){
+                return true;
+            }
+        }
+        return false;
+    }
+
     private boolean validateAsignment(){
         if (gId == 0){
             displayWarnMessage("Guardia Invalido");
+            return false;
+        }
+        if (!isValidGuard(gId)){
+            displayWarnMessage("Guardia ya asignado");
             return false;
         }
         if (apId == 0){
@@ -107,7 +123,7 @@ public class EditAptsDialog extends DialogFragment {
     }
 
     private boolean isvalidIncidence(){
-        return !incidenceTypeSpinner.getSelectedItem().equals("N/A");
+        return !incidenceTypeSpinner.getSelectedItem().toString().equals("N/A");
     }
 
     private boolean hasIncidence(){
@@ -146,7 +162,17 @@ public class EditAptsDialog extends DialogFragment {
                 apId = getApostamientoIdByApName(name);
             }
         });
-        incidenceSpinner.setOnItemSelectedListener(onItemSelectedListener);
+        incidenceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                incidenceHandler();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     private int getApostamientoIdByApName(String name){
@@ -163,7 +189,12 @@ public class EditAptsDialog extends DialogFragment {
         for (int i = 0; i < guards.size(); i++) {
             Guard g = guards.get(i);
             if (g.getPaersonData().getPersonFullName().equals(name)){
-                return g.getGuardId();
+                if(!g.isAsigned()){
+                    g.setAsigned(true);
+                    return g.getGuardId();
+                }else{
+                    displayWarnMessage("Elemento ya asignado");
+                }
             }
         }
         return 0;
@@ -223,6 +254,11 @@ public class EditAptsDialog extends DialogFragment {
         }
     }
 
+    private void clearFields(){
+        guardautocomplete.setText("");
+        apostamientoAutocomplete.setText("");
+    }
+
     private void warnGuardAlreadyAsigned(){
         displayWarnMessage("El guardia ya ha sido asignado");
     }
@@ -239,7 +275,7 @@ public class EditAptsDialog extends DialogFragment {
             public void onFinish() {
                 errorTextView.setText("");
             }
-        };
+        }.start();
     }
 
     public void setApostamientos(List<Apostamiento> aps) {

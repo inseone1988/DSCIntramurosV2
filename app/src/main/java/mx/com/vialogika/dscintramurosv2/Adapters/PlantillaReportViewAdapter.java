@@ -7,9 +7,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +28,11 @@ public class PlantillaReportViewAdapter extends RecyclerView.Adapter<PlantillaRe
     private List<ApostamientoReportView> mDatatset;
     private Context context;
 
-    public PlantillaReportViewAdapter(List<ApostamientoReportView> dataset) {
+    private AdapterCallbacks cb;
+
+    public PlantillaReportViewAdapter(List<ApostamientoReportView> dataset,AdapterCallbacks callbacks) {
         this.mDatatset = dataset;
+        this.cb = callbacks;
     }
 
     public static class PlantillaReportViewHolder extends RecyclerView.ViewHolder{
@@ -33,12 +40,14 @@ public class PlantillaReportViewAdapter extends RecyclerView.Adapter<PlantillaRe
         TextView reportedRequired,apName;
         ListView guardslist;
         ArrayAdapter<String> guardsListadapter;
+        LinearLayout guards_wrapper;
         public PlantillaReportViewHolder(@NonNull View itemView) {
             super(itemView);
             cardView = itemView.findViewById(R.id.cv_container);
             reportedRequired = itemView.findViewById(R.id.reported_required_text);
             guardslist = itemView.findViewById(R.id.guard_list);
             apName = itemView.findViewById(R.id.ap_name_text);
+            guards_wrapper = itemView.findViewById(R.id.guards_wrapper);
         }
     }
 
@@ -51,13 +60,21 @@ public class PlantillaReportViewAdapter extends RecyclerView.Adapter<PlantillaRe
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PlantillaReportViewHolder plantillaReportViewHolder, int i) {
+    public void onBindViewHolder(@NonNull PlantillaReportViewHolder plantillaReportViewHolder,final int i) {
         ApostamientoReportView current = mDatatset.get(i);
+        int mHeigth = current.getGuards().size() > 1 ? (120 * (current.getGuards().size())) : 200;
         String reqRep =  current.apostamientoGuardCount()+"/"+current.apostamientoRequired();
         plantillaReportViewHolder.guardsListadapter = new ArrayAdapter<>(getContext(),android.R.layout.simple_list_item_1,getApGuardNames(current.getGuards()));
         plantillaReportViewHolder.guardslist.setAdapter(plantillaReportViewHolder.guardsListadapter);
+        plantillaReportViewHolder.guardslist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                cb.onReportViewClick(i,position);
+            }
+        });
         plantillaReportViewHolder.reportedRequired.setText(reqRep);
         plantillaReportViewHolder.apName.setText(current.getApostamiento().getPlantillaPlaceApostamientoName());
+        plantillaReportViewHolder.guards_wrapper.getLayoutParams().height = mHeigth;
     }
 
     private Context getContext(){
@@ -79,5 +96,9 @@ public class PlantillaReportViewAdapter extends RecyclerView.Adapter<PlantillaRe
     @Override
     public int getItemCount() {
         return mDatatset.size();
+    }
+
+    public interface AdapterCallbacks{
+        void onReportViewClick(int arvpos,int gpos);
     }
 }
