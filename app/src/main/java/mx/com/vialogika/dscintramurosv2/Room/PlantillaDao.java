@@ -18,6 +18,6 @@ public interface PlantillaDao {
     @Query("SELECT DISTINCT(edoFuerzaTurno) FROM plantillas WHERE edoFuerzaDate BETWEEN :start AND :end")
     String[] getEdoFuerzaTurnosReported(String start,String end);
 
-    @Query("SELECT * FROM Plantillas WHERE edoFuerzaDate BETWEEN :start AND :end")
+    @Query("SELECT * FROM Plantillas WHERE edoFuerzaDate BETWEEN :start AND :end AND edoFuerzaTurno = :grupo")
     List<Plantilla> getSavedPlantillaPlaces(String start,String end,String grupo);
 }

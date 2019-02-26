@@ -1,6 +1,7 @@
 package mx.com.vialogika.dscintramurosv2.Room;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 import org.json.JSONException;
@@ -21,6 +22,10 @@ public class Guard {
     private String guardTurno;
     private int    guardStatus;
     private String guardBajaTimestamp;
+    @Ignore
+    private boolean asigned = false;
+    @Ignore
+    private Person paersonData;
 
     public Guard() {
 
@@ -172,5 +177,21 @@ public class Guard {
 
     public void setGuardBajaTimestamp(String guardBajaTimestamp) {
         this.guardBajaTimestamp = guardBajaTimestamp;
+    }
+
+    public Person getPaersonData() {
+        return paersonData;
+    }
+
+    public void setPaersonData(Person paersonData) {
+        this.paersonData = paersonData;
+    }
+
+    public boolean isAsigned() {
+        return asigned;
+    }
+
+    public void setAsigned(boolean asigned) {
+        this.asigned = asigned;
     }
 }

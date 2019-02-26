@@ -2,6 +2,7 @@ package mx.com.vialogika.dscintramurosv2.Adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,11 +29,13 @@ public class PlantillaReportViewAdapter extends RecyclerView.Adapter<PlantillaRe
     }
 
     public static class PlantillaReportViewHolder extends RecyclerView.ViewHolder{
+        CardView cardView;
         TextView reportedRequired,apName;
         ListView guardslist;
         ArrayAdapter<String> guardsListadapter;
         public PlantillaReportViewHolder(@NonNull View itemView) {
             super(itemView);
+            cardView = itemView.findViewById(R.id.cv_container);
             reportedRequired = itemView.findViewById(R.id.reported_required_text);
             guardslist = itemView.findViewById(R.id.guard_list);
             apName = itemView.findViewById(R.id.ap_name_text);
@@ -50,8 +53,8 @@ public class PlantillaReportViewAdapter extends RecyclerView.Adapter<PlantillaRe
     @Override
     public void onBindViewHolder(@NonNull PlantillaReportViewHolder plantillaReportViewHolder, int i) {
         ApostamientoReportView current = mDatatset.get(i);
-        String reqRep = current.apostamientoRequired() +"/"+current.apostamientoGuardCount();
-        plantillaReportViewHolder.guardsListadapter = new ArrayAdapter<>(getContext(),android.R.layout.simple_list_item_1,getApGuardNames(current.getPersons()));
+        String reqRep =  current.apostamientoGuardCount()+"/"+current.apostamientoRequired();
+        plantillaReportViewHolder.guardsListadapter = new ArrayAdapter<>(getContext(),android.R.layout.simple_list_item_1,getApGuardNames(current.getGuards()));
         plantillaReportViewHolder.guardslist.setAdapter(plantillaReportViewHolder.guardsListadapter);
         plantillaReportViewHolder.reportedRequired.setText(reqRep);
         plantillaReportViewHolder.apName.setText(current.getApostamiento().getPlantillaPlaceApostamientoName());
@@ -61,11 +64,11 @@ public class PlantillaReportViewAdapter extends RecyclerView.Adapter<PlantillaRe
         return this.context;
     }
 
-    private List<String> getApGuardNames(List<Person> guards){
+    private List<String> getApGuardNames(List<Guard> guards){
         List<String> guardsNames = new ArrayList<>();
         if (guards.size() > 0){
             for (int i = 0; i < guards.size(); i++) {
-                guardsNames.add(guards.get(i).getPersonFullName());
+                guardsNames.add(guards.get(i).getPaersonData().getPersonFullName());
             }
         }else{
             guardsNames.add("Apostamiento sin guardias");

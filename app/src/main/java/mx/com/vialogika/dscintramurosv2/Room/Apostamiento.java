@@ -2,6 +2,7 @@ package mx.com.vialogika.dscintramurosv2.Room;
 
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 import org.json.JSONException;
@@ -20,6 +21,8 @@ public class Apostamiento {
     private int     plantillaPlaceGuardsRequired;
     private boolean plantillaPlaceStatus;
     private String  plantillaPlaceConsExp;
+    @Ignore
+    private boolean alreadyInView = false;
 
     public Apostamiento() {
 
@@ -34,7 +37,7 @@ public class Apostamiento {
             this.plantillaPlaceType = apostamiento.getString("plantilla_place_type");
             this.plantillaPlaceSiteId = apostamiento.getInt("plantilla_place_site_id");
             this.plantillaPlaceGuardsRequired = apostamiento.getInt("plantilla_place_guards_required");
-            this.plantillaPlaceStatus = apostamiento.getBoolean("plantilla_place_status");
+            this.plantillaPlaceStatus = apostamiento.getInt("plantilla_place_status") == 1;
             this.plantillaPlaceConsExp = apostamiento.getString("plantilla_place_cons_exp");
         } catch (JSONException e) {
             e.printStackTrace();
@@ -149,5 +152,13 @@ public class Apostamiento {
 
     public void setPlantillaPlaceConsExp(String plantillaPlaceConsExp) {
         this.plantillaPlaceConsExp = plantillaPlaceConsExp;
+    }
+
+    public boolean isAlreadyInView() {
+        return alreadyInView;
+    }
+
+    public void setAlreadyInView(boolean alreadyInView) {
+        this.alreadyInView = alreadyInView;
     }
 }

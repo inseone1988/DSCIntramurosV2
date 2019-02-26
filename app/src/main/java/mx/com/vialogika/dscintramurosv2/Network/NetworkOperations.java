@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import mx.com.vialogika.dscintramurosv2.Room.Apostamiento;
 import mx.com.vialogika.dscintramurosv2.Room.DatabaseOperations;
 import mx.com.vialogika.dscintramurosv2.Room.Guard;
 import mx.com.vialogika.dscintramurosv2.Room.Person;
@@ -86,6 +87,38 @@ public class NetworkOperations {
                 }catch(JSONException e){
                     e.printStackTrace();
                 }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+        rq.add(jor);
+    }
+
+    public void SyncApostamientos(int siteid){
+        JSONObject params = new JSONObject();
+        try{
+            params.put("function","getApostamientos");
+            params.put("siteid",siteid);
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+        JsonObjectRequest jor = new JsonObjectRequest(Request.Method.POST, defaultURL(), params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+            DatabaseOperations dbo = DatabaseOperations.getInstance(getContext());
+            List<Apostamiento> aps = new ArrayList<>();
+            try{
+                JSONArray apPayload = response.getJSONArray("payload");
+                for (int i = 0; i < apPayload.length(); i++) {
+                    aps.add(new Apostamiento(apPayload.getJSONObject(i)));
+                }
+                dbo.SyncApostamientos(aps);
+            }catch(JSONException e){
+                e.printStackTrace();
+            }
             }
         }, new Response.ErrorListener() {
             @Override

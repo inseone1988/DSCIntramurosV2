@@ -19,5 +19,7 @@ public interface GuardDao {
     @Query("SELECT * FROM Guards WHERE guardStatus != 0")
     List<Guard> getActiveElements();
 
+    @Query("SELECT * FROM Guards WHERE guardHash= :gHash")
+    Guard getGuardByHash(String gHash);
 
 }

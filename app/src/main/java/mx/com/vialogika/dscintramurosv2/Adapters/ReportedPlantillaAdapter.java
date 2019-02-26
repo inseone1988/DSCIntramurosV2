@@ -46,7 +46,7 @@ public class ReportedPlantillaAdapter extends RecyclerView.Adapter<ReportedPlant
     @Override
     public void onBindViewHolder(@NonNull ReportedPlantillaViewHolder holder, int i) {
         ReportedPlantillaView plantillaView = dataset.get(i);
-        holder.plantillaNo.setText(plantillaView.getGroupNumber());
+        holder.plantillaNo.setText(String.valueOf(plantillaView.getGroupNumber()));
         holder.sitename.setText(plantillaView.getSiteName());
         holder.providername.setText(plantillaView.getProvider());
         holder.gReported.setText(String.valueOf(plantillaView.getGroupReported()));

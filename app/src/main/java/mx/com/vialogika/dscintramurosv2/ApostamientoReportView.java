@@ -13,6 +13,7 @@ public class ApostamientoReportView {
     private List<Guard> guards = new ArrayList<>();
 
     public ApostamientoReportView(Apostamiento apostamiento) {
+        this.apostamiento = apostamiento;
     }
 
     public List<Guard> getGuards() {
@@ -51,8 +52,11 @@ public class ApostamientoReportView {
         this.persons = persons;
     }
 
-    public void addGuard(Person person, Guard guard){
-        persons.add(person);
+    public void addGuard(Guard guard){
         guards.add(guard);
+    }
+
+    public int getApostamientoId(){
+        return this.apostamiento.getPlantillaPlaceId();
     }
 }

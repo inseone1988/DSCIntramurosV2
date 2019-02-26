@@ -16,7 +16,7 @@ public class DatabaseOperations {
 
     private static volatile DatabaseOperations dbo;
     private static          AppDatabase        db;
-    private static Handler handler = new Handler(Looper.getMainLooper());
+    public static Handler handler = new Handler(Looper.getMainLooper());
 
     private DatabaseOperations(Context context) {
 
@@ -88,7 +88,7 @@ public class DatabaseOperations {
         }).start();
     }
 
-    public void SyncApostamientos(final  List<Apostamiento> apostamientos){
+    public void SyncApostamientos(final List<Apostamiento> apostamientos){
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -159,11 +159,57 @@ public class DatabaseOperations {
             @Override
             public void run() {
                 final List<Apostamiento> aps = db.apostamientoDao().getAllApostamientos();
-                final List<Plantilla> plantillas = db.plantillaDao().getSavedPlantillaPlaces()
-                cb.onOperationFinished(aps);
+                final List<Plantilla> plantillas = db.plantillaDao().getSavedPlantillaPlaces(from,to,grupo);
+                final List<Guard> guards = db.guardDao().getActiveElements();
+                for (int i = 0; i < guards.size(); i++) {
+                    Guard current = guards.get(i);
+                    Person personadata = db.personDao().getPersonByid(current.getGuardPersonId());
+                    if (personadata != null){
+                        guards.get(i).setPaersonData(personadata);
+                    }
+                }
+                Object[] result = new Object[]{aps,plantillas,guards};
+                cb.onOperationFinished(result);
             }
         }).start();
     }
+
+    public void getGuardByHash(final String gHash,final backgroundOperation cb){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Guard guard = db.guardDao().getGuardByHash(gHash);
+                if (guard != null){
+                    Person person = db.personDao().getPersonByid(guard.getGuardPersonId());
+                    guard.setPaersonData(person);
+                }
+                cb.onOperationFinished(guard);
+            }
+        }).start();
+    }
+
+    public void saveIncidence(final Incidencia incidencia){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                db.incidenceDao().save(incidencia);
+            }
+        }).start();
+    }
+
+    public void savePlantillaPlace(final Plantilla plantilla){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                db.plantillaDao().save(plantilla);
+            }
+        }).start();
+    }
+
+    public static Handler getHandler() {
+        return handler;
+    }
+
     public interface backgroundOperation{
         void onOperationFinished(Object callbackResult);
     }

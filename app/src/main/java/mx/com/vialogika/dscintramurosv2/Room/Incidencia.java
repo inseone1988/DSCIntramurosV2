@@ -115,4 +115,8 @@ public class Incidencia {
     public void setProviderIncidencesUuid(String providerIncidencesUuid) {
         this.providerIncidencesUuid = providerIncidencesUuid;
     }
+
+    public boolean isValidIncidence(){
+        return this.getProviderIncidencesUuid() != null && !this.providerIncidencesUuid.equals("");
+    }
 }

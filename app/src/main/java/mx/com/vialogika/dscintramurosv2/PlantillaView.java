@@ -176,12 +176,11 @@ public class PlantillaView extends Fragment {
     }
 
     private void setupRecyclerView(){
-        if (dataset.size() > 0){
-            mLayoutManager = new LinearLayoutManager(getContext());
-            adapter = new ReportedPlantillaAdapter(dataset);
-            rv.setLayoutManager(mLayoutManager);
-            rv.setAdapter(adapter);
-        }else{
+        mLayoutManager = new LinearLayoutManager(getContext());
+        adapter = new ReportedPlantillaAdapter(dataset);
+        rv.setLayoutManager(mLayoutManager);
+        rv.setAdapter(adapter);
+        if (dataset.size() < 1){
             showNoDataView();
         }
     }

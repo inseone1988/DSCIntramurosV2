@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity
         setupDrawer();
         ntwop = NetworkOperations.getInstance(this);
         syncGuards();
+        SyncApostamientos();
     }
 
     private void getItems() {
@@ -62,6 +63,10 @@ public class MainActivity extends AppCompatActivity
             return;
         }
         ntwop.SyncGuards(1);
+    }
+
+    private void SyncApostamientos(){
+        ntwop.SyncApostamientos(1);
     }
 
     private void askPermission() {
