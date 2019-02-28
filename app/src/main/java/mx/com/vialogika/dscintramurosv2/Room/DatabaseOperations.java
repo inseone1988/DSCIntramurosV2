@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Locale;
 
 import mx.com.vialogika.dscintramurosv2.Utils.CryptoHash;
+import mx.com.vialogika.dscintramurosv2.Utils.TimeUtils;
 
 public class DatabaseOperations {
 
@@ -220,6 +221,49 @@ public class DatabaseOperations {
             }
         }).start();
 
+    }
+
+    public void getEdoAndIncidencesFromDay(final String grupo,final backgroundOperation cb){
+        Calendar c = Calendar.getInstance();
+        final String from = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(c.getTime());
+        c.add(Calendar.DAY_OF_MONTH,1);
+        final String to = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).format(c.getTime());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Incidencia> incidences = db.incidenceDao().getIncidences(from,to);
+                List<Plantilla> plantillas = db.plantillaDao().getSavedPlantillaPlaces(from,to,grupo);
+                Object[] result = new Object[]{incidences,plantillas};
+                cb.onOperationFinished(result);
+            }
+        }).start();
+    }
+
+    public void updateEdoData(final String grupo,final List<Plantilla> plantillas){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Calendar c = Calendar.getInstance();
+                c.setTime(TimeUtils.parse("yyyy-MM-dd",plantillas.get(0).getEdoFuerzaReported()));
+                String from = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).format(c.getTime());
+                c.add(Calendar.DAY_OF_MONTH,1);
+                String to = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).format(c.getTime());
+                db.plantillaDao().updateAfterServerSave(grupo,from,to,plantillas);
+            }
+        }).start();
+    }
+    
+    public void setflagEdoUpdated(final String identifier,final String grupo){
+        Calendar c = Calendar.getInstance();
+        final String from = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(c.getTime());
+        c.add(Calendar.DAY_OF_MONTH,1);
+        final String to = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).format(c.getTime());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                db.plantillaDao().flagPlantillaSaved(identifier,from,to,grupo);
+            }
+        }).start();
     }
 
     public static Handler getHandler() {

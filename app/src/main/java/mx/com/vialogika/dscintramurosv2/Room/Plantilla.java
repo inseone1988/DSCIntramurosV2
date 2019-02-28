@@ -8,21 +8,22 @@ import org.json.JSONObject;
 
 @Entity(tableName = "Plantillas")
 public class Plantilla {
-    @PrimaryKey(autoGenerate = true)
-    private int    loacalId;
-    private int    id;
-    private String edoFuerzaPlantillaId;
-    private String edoFuerzaProviderId;
-    private String edoFuerzaSiteId;
-    private String edoFuerzaPlaceId;
-    private String edoFuerzaGuardId;
-    private String edoFuerzaTiempo;
-    private String edoFuerzaIncidenceId;
-    private String edoFuerzaCoveredGuardId;
-    private String edoFuerzaGuardJob;
-    private String edoFuerzaDate;
-    private String edoFuerzaReported;
-    private String edoFuerzaTurno;
+    @PrimaryKey
+    private int     id;
+    private String  edoFuerzaPlantillaId;
+    private String  edoFuerzaProviderId;
+    private String  edoFuerzaSiteId;
+    private String  edoFuerzaPlaceId;
+    private String  edoFuerzaGuardId;
+    private String  edoFuerzaTiempo;
+    private String  edoFuerzaIncidenceId;
+    private String  edoFuerzaCoveredGuardId;
+    private String  edoFuerzaGuardJob;
+    private String  edoFuerzaDate;
+    private String  edoFuerzaReported;
+    private String  edoFuerzaTurno;
+    private String  edoFuerzaUpdated;
+    private Boolean edoFuerzaStatus;
 
     public Plantilla() {
     }
@@ -42,6 +43,8 @@ public class Plantilla {
             this.edoFuerzaDate = plantilla.getString("edo_fuerza_date");
             this.edoFuerzaReported = plantilla.getString("edo_fuerza_reported");
             this.edoFuerzaTurno = plantilla.getString("edo_fuerza_turno");
+            this.edoFuerzaUpdated = plantilla.getString("edo_fuerza_updated");
+            this.edoFuerzaStatus = plantilla.getInt("edo_fuerza_status") == 1;
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -63,13 +66,15 @@ public class Plantilla {
             plantilla.put("edo_fuerza_date", this.edoFuerzaDate);
             plantilla.put("edo_fuerza_reported", this.edoFuerzaReported);
             plantilla.put("edo_fuerza_turno", this.edoFuerzaTurno);
+            plantilla.put("edo_fuerza_updated", this.edoFuerzaUpdated);
+            plantilla.put("edo_fuerza_status", this.edoFuerzaStatus);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return plantilla;
     }
 
-    public void update(Plantilla plantilla){
+    public void update(Plantilla plantilla) {
         this.id = plantilla.getId();
         this.edoFuerzaPlantillaId = plantilla.getEdoFuerzaPlantillaId();
         this.edoFuerzaProviderId = plantilla.getEdoFuerzaProviderId();
@@ -83,14 +88,8 @@ public class Plantilla {
         this.edoFuerzaDate = plantilla.getEdoFuerzaDate();
         this.edoFuerzaReported = plantilla.getEdoFuerzaReported();
         this.edoFuerzaTurno = plantilla.getEdoFuerzaTurno();
-    }
-
-    public int getLoacalId() {
-        return loacalId;
-    }
-
-    public void setLoacalId(int loacalId) {
-        this.loacalId = loacalId;
+        this.edoFuerzaUpdated = plantilla.getEdoFuerzaUpdated();
+        this.edoFuerzaStatus = plantilla.getEdoFuerzaStatus();
     }
 
     public int getId() {
@@ -195,5 +194,21 @@ public class Plantilla {
 
     public void setEdoFuerzaTurno(String edoFuerzaTurno) {
         this.edoFuerzaTurno = edoFuerzaTurno;
+    }
+
+    public Boolean getEdoFuerzaStatus() {
+        return edoFuerzaStatus;
+    }
+
+    public void setEdoFuerzaStatus(Boolean edoFuerzaStatus) {
+        this.edoFuerzaStatus = edoFuerzaStatus;
+    }
+
+    public String getEdoFuerzaUpdated() {
+        return edoFuerzaUpdated;
+    }
+
+    public void setEdoFuerzaUpdated(String edoFuerzaUpdated) {
+        this.edoFuerzaUpdated = edoFuerzaUpdated;
     }
 }

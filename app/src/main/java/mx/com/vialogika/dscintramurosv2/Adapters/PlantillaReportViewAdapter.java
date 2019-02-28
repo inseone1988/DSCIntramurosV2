@@ -69,7 +69,8 @@ public class PlantillaReportViewAdapter extends RecyclerView.Adapter<PlantillaRe
         plantillaReportViewHolder.guardslist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                cb.onReportViewClick(i,position);
+                String gname = ((TextView)view).getText().toString();
+                cb.onReportViewClick(i,position,gname);
             }
         });
         plantillaReportViewHolder.reportedRequired.setText(reqRep);
@@ -99,6 +100,6 @@ public class PlantillaReportViewAdapter extends RecyclerView.Adapter<PlantillaRe
     }
 
     public interface AdapterCallbacks{
-        void onReportViewClick(int arvpos,int gpos);
+        void onReportViewClick(int arvpos,int gpos,String guardname);
     }
 }

@@ -18,8 +18,11 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import mx.com.vialogika.dscintramurosv2.R;
@@ -246,6 +249,7 @@ public class EditAptsDialog extends DialogFragment {
 
     private void incidenceHandler(){
         if (!incidenceSpinner.getSelectedItem().toString().equals("Tiempo ordinario")){
+            incidencia.setProviderIncidencesDatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).format(new Date()));
             incidencia.setProviderIncidencesUuid(UUID.randomUUID().toString());
             incidencia.setProviderIncidencesName(incidenceSpinner.getSelectedItem().toString());
             incidencia.setProviderIncidencesType(incidenceTypeSpinner.getSelectedItem().toString());

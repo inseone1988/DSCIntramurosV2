@@ -26,6 +26,7 @@ import java.util.Locale;
 import mx.com.vialogika.dscintramurosv2.Adapters.PlantillaReportViewAdapter;
 import mx.com.vialogika.dscintramurosv2.Adapters.ReportedPlantillaAdapter;
 import mx.com.vialogika.dscintramurosv2.Dialogs.EditAptsDialog;
+import mx.com.vialogika.dscintramurosv2.Network.NetworkOperations;
 import mx.com.vialogika.dscintramurosv2.Room.Apostamiento;
 import mx.com.vialogika.dscintramurosv2.Room.DatabaseOperations;
 import mx.com.vialogika.dscintramurosv2.Room.Guard;
@@ -157,7 +158,7 @@ public class PlantillaEdit extends AppCompatActivity {
     }
 
     private void setToolbarTitle(){
-        toolbar.setTitle("edicion de plantilla");
+        toolbar.setTitle("Edicion de plantilla");
     }
 
     private void getitems(){
@@ -169,9 +170,15 @@ public class PlantillaEdit extends AppCompatActivity {
     private void setupRV(){
         adapter = new PlantillaReportViewAdapter(dataset, new PlantillaReportViewAdapter.AdapterCallbacks() {
             @Override
-            public void onReportViewClick(int arvpos, int gpos) {
-                int gid = dataset.get(arvpos).getGuards().get(gpos).getGuardId();
-                removeGuardFromPlantilla(arvpos,gpos,gid);
+            public void onReportViewClick(int arvpos, int gpos,String guardname) {
+                if (dataset.get(arvpos).getGuards().size() > 0){
+                    int gid = dataset.get(arvpos).getGuards().get(gpos).getGuardId();
+                    if(!guardname.equals("Apostamiento sin guardias")){
+                        removeGuardFromPlantilla(arvpos,gpos,gid);
+                    }
+                }else{
+                    Toast.makeText(PlantillaEdit.this, "No hay guardias en el apostamiento", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         layoutManager = new LinearLayoutManager(this);
@@ -181,8 +188,9 @@ public class PlantillaEdit extends AppCompatActivity {
 
     private void removeGuardFromPlantilla(final int arvpos,final int gpos,final int gid){
         AlertDialog.Builder adb = new AlertDialog.Builder(this);
+        String guardname = dataset.get(arvpos).getGuards().get(gpos).getPaersonData().getPersonFullName();
         adb.setTitle("Confirmacion")
-                .setMessage("Desea quitar el elemento de la plantilla?")
+                .setMessage("Desea quitar el elemento "+guardname+" de la plantilla?")
                 .setNegativeButton(android.R.string.cancel,null)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
@@ -221,7 +229,10 @@ public class PlantillaEdit extends AppCompatActivity {
 
     private void addApostamiento(int gid,int apid,Incidencia incidencia){
         Guard g = getGuardById(gid);
+        //TODO: Obtener provedor y site por SP
         Plantilla plantilla = new Plantilla();
+        plantilla.setEdoFuerzaProviderId("1");
+        plantilla.setEdoFuerzaSiteId("1");
         plantilla.setEdoFuerzaGuardId(CryptoHash.sha1(String.valueOf(gid)));
         plantilla.setEdoFuerzaPlaceId(String.valueOf(apid));
         plantilla.setEdoFuerzaTurno(grupo);
@@ -278,11 +289,42 @@ public class PlantillaEdit extends AppCompatActivity {
         }
     }
 
+    private void confirmSendPantillaToServer(){
+        AlertDialog.Builder adb = new AlertDialog.Builder(this);
+        adb.setTitle("Enviar plantilla.")
+                .setMessage("¿Deseas enviar la plantilla ahora?")
+                .setNegativeButton(android.R.string.cancel,null)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        sendPlantillaToServer();
+                    }
+                })
+                .show();
+    }
+
+    private void sendPlantillaToServer(){
+        NetworkOperations nop = NetworkOperations.getInstance(this);
+        nop.sendPlantilla(grupo);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case NetworkOperations.SEND_PLANTILLA_TO_SERVER:
+                confirmSendPantillaToServer();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuItem item = menu.add("Enviar");
+        MenuItem item = menu.add(Menu.NONE, NetworkOperations.SEND_PLANTILLA_TO_SERVER,Menu.NONE,"Enviar plantilla");
         item.setIcon(R.drawable.ic_cloud_upload_black_24dp);
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         return super.onCreateOptionsMenu(menu);
     }
+
+
 }
