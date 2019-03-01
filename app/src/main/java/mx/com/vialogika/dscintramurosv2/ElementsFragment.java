@@ -1,9 +1,12 @@
 package mx.com.vialogika.dscintramurosv2;
 
 
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -25,8 +28,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import mx.com.vialogika.dscintramurosv2.Adapters.ElementAdapter;
+import mx.com.vialogika.dscintramurosv2.Dialogs.NewGuardDialog;
 import mx.com.vialogika.dscintramurosv2.Room.DatabaseOperations;
 import mx.com.vialogika.dscintramurosv2.Room.Guard;
+
+import static android.app.Activity.RESULT_OK;
 
 
 /**
@@ -37,6 +43,8 @@ import mx.com.vialogika.dscintramurosv2.Room.Guard;
 public class ElementsFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
+    public static final int REQUEST_IMAGE_CAPTURE = 16143;
 
     public static final  String ACTIVE_ELEMENTS = "Activo";
     public static final  String BAJA_ELEMENTS   = "Baja";
@@ -116,12 +124,35 @@ public class ElementsFragment extends Fragment {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.add_element_fab:
+                    takePicture();
                     Toast.makeText(getContext(), "Hello new guard", Toast.LENGTH_SHORT).show();
                 default:
                     break;
             }
         }
     };
+
+    private void takePicture(){
+        Intent takepictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takepictureIntent.resolveActivity(getActivity().getPackageManager()) != null){
+            startActivityForResult(takepictureIntent,REQUEST_IMAGE_CAPTURE);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
+            Bundle extras = data.getExtras();
+            Bitmap imagebitmap = (Bitmap) extras.get("data");
+            showNewElementDialog(imagebitmap);
+        }
+    }
+
+    private void showNewElementDialog(Bitmap thumb){
+        NewGuardDialog dialog = new NewGuardDialog();
+        dialog.setProfileImage(thumb);
+        dialog.show(getActivity().getSupportFragmentManager(),"NEW_GUARD");
+    }
 
     private AdapterView.OnItemSelectedListener spListener = new AdapterView.OnItemSelectedListener() {
         @Override

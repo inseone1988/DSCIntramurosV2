@@ -34,9 +34,30 @@
         <item>Requerimiento del cliente</item>
         <item>Otro</item>
     </string-array>
+    <string-array name="turno">
+        <item>12</item>
+        <item>24</item>
+    </string-array>
+    <string-array name="genders">
+        <item>Masculino</item>
+        <item>Femenino</item>
+    </string-array>
+    <string-array name="roles">
+        <item>Guardia</item>
+        <item>Jefe de turno</item>
+        <item>Jefe de servicio</item>
+        <item>Armado</item>
+        <item>Otro</item>
+    </string-array>
+    <string name="genere">Genero</string>
+    <string name="grade">Puesto</string>
+    <string name="turn">Turno</string>
     <string name="guard_name"><b>Nombre del guardia</b> : %1$s</string>
     <string name="guard_position"><b>Puesto</b>: %1$s</string>
     <string name="create_date"><b>Fecha de alta</b>: %1$s</string>
     <string name="active"><b>Status</b>: %1$s</string>
     <string name="guard_status">Guard status</string>
+    <string name="name">Nombre</string>
+    <string name="fname">Apellido materno</string>
+    <string name="lname">Apellido paterno</string>
 </resources>
