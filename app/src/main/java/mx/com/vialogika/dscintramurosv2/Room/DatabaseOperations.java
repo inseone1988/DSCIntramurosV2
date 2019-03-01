@@ -266,6 +266,22 @@ public class DatabaseOperations {
         }).start();
     }
 
+    public void getGuards(final backgroundOperation cb){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Guard> guards = db.guardDao().getAllGuards();
+                for (int i = 0; i < guards.size(); i++) {
+                    Person person = db.personDao().getPersonByid(guards.get(i).getGuardId());
+                    if (person != null){
+                        guards.get(i).setPaersonData(person);
+                    }
+                }
+                cb.onOperationFinished(guards);
+            }
+        }).start();
+    }
+
     public static Handler getHandler() {
         return handler;
     }

@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity
         FragmentManager     fragmentManager     = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.fragment_container, fragment)
+                .addToBackStack(null)
                 .commit();
     }
 
@@ -150,7 +151,9 @@ public class MainActivity extends AppCompatActivity
                 loadfragment(plantillaView);
                 break;
             case R.id.nav_gallery:
-
+                ElementsFragment elementsFragment = ElementsFragment.newInstance("","");
+                loadfragment(elementsFragment);
+                setTitle("Guardias");
                 break;
             case R.id.nav_slideshow:
 

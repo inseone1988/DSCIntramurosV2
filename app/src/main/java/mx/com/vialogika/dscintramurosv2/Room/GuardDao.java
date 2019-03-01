@@ -22,4 +22,7 @@ public interface GuardDao {
     @Query("SELECT * FROM Guards WHERE guardHash= :gHash")
     Guard getGuardByHash(String gHash);
 
+    @Query("SELECT * FROM Guards ORDER BY guardId ASC")
+    List<Guard> getAllGuards();
+
 }

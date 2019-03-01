@@ -34,6 +34,7 @@ import mx.com.vialogika.dscintramurosv2.Room.Incidencia;
 import mx.com.vialogika.dscintramurosv2.Room.Person;
 import mx.com.vialogika.dscintramurosv2.Room.Plantilla;
 import mx.com.vialogika.dscintramurosv2.Utils.CryptoHash;
+import mx.com.vialogika.dscintramurosv2.Utils.TimeUtils;
 
 public class PlantillaEdit extends AppCompatActivity {
 
@@ -231,6 +232,7 @@ public class PlantillaEdit extends AppCompatActivity {
         Guard g = getGuardById(gid);
         //TODO: Obtener provedor y site por SP
         Plantilla plantilla = new Plantilla();
+        plantilla.setId(TimeUtils.unixWithSalt());
         plantilla.setEdoFuerzaProviderId("1");
         plantilla.setEdoFuerzaSiteId("1");
         plantilla.setEdoFuerzaGuardId(CryptoHash.sha1(String.valueOf(gid)));

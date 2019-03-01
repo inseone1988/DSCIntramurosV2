@@ -34,4 +34,9 @@
         <item>Requerimiento del cliente</item>
         <item>Otro</item>
     </string-array>
+    <string name="guard_name"><b>Nombre del guardia</b> : %1$s</string>
+    <string name="guard_position"><b>Puesto</b>: %1$s</string>
+    <string name="create_date"><b>Fecha de alta</b>: %1$s</string>
+    <string name="active"><b>Status</b>: %1$s</string>
+    <string name="guard_status">Guard status</string>
 </resources>

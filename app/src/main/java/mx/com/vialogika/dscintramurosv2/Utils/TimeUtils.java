@@ -17,4 +17,11 @@ public class TimeUtils {
         }
         return null;
     }
+
+    public static int unixWithSalt(){
+        //TODO:Generate a unix timestamp convert it to minutes and add a salt
+        int generated = (int)System.currentTimeMillis() / 60000;
+        int salt = (int)(Math.random() * 10);
+        return generated -salt;
+    }
 }

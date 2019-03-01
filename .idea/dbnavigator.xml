@@ -55,6 +55,7 @@
     <filter-list connection-id="ddaa925b-519a-4275-8f25-04c31700e3cd" dataset="main.Incidences" active-filter-id="EMPTY_FILTER" />
     <filter-list connection-id="ddaa925b-519a-4275-8f25-04c31700e3cd" dataset="main.Persons" active-filter-id="EMPTY_FILTER" />
     <filter-list connection-id="ddaa925b-519a-4275-8f25-04c31700e3cd" dataset="main.Guards" active-filter-id="EMPTY_FILTER" />
+    <filter-list connection-id="82099aac-4e39-4ef3-9ec2-aecc701eb566" dataset="main.Persons" active-filter-id="" />
     <filter-list connection-id="82099aac-4e39-4ef3-9ec2-aecc701eb566" dataset="main.Plantillas" active-filter-id="EMPTY_FILTER" />
     <filter-list connection-id="82099aac-4e39-4ef3-9ec2-aecc701eb566" dataset="main.Apostamientos" active-filter-id="EMPTY_FILTER" />
   </component>

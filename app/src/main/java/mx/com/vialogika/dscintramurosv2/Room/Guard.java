@@ -194,4 +194,8 @@ public class Guard {
     public void setAsigned(boolean asigned) {
         this.asigned = asigned;
     }
+
+    public boolean isActive(){
+        return this.guardStatus != 0;
+    }
 }

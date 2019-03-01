@@ -145,7 +145,7 @@ public class NetworkOperations {
                 List<Plantilla>  edo        = (List<Plantilla>) r[1];
                 List<Incidencia> incidences = (List<Incidencia>) r[0];
                 if (edo.size() > 0) {
-                    String mode = edo.get(0).getEdoFuerzaPlantillaId() != null ? MODE_SEND : MODE_UPDATE;
+                    String mode = edo.get(0).getEdoFuerzaPlantillaId() == null ? MODE_SEND : MODE_UPDATE;
                     JSONObject params = new JSONObject();
                     JSONArray  data   = new JSONArray();
                     JSONArray  inc    = new JSONArray();
