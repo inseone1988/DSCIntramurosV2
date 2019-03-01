@@ -3,88 +3,124 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="15dp"
-    android:orientation="horizontal">
-
-    <ImageView
-        android:id="@+id/new_guard_profile_photo"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:scaleType="fitCenter"
-        app:srcCompat="@drawable/ic_guard" />
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="15dp"
+        android:orientation="horizontal"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp">
 
-        <EditText
-            android:id="@+id/editText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:ems="10"
-            android:hint="@string/name"
-            android:inputType="textPersonName" />
+        <ImageView
+            android:id="@+id/new_guard_profile_photo"
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:layout_weight="0.4"
+            android:scaleType="center"
+            app:srcCompat="@drawable/ic_guard" />
 
-        <EditText
-            android:id="@+id/editText2"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:ems="10"
-            android:hint="@string/fname"
-            android:inputType="textPersonName" />
+            android:layout_weight="0.6"
+            android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/editText3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:ems="10"
-            android:hint="@string/lname"
-            android:inputType="textPersonName" />
+            <EditText
+                android:id="@+id/element_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:ems="10"
+                android:hint="@string/name"
+                android:inputType="textPersonName"
+                android:textSize="14sp" />
 
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/genere"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            <EditText
+                android:id="@+id/element_fname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:ems="10"
+                android:hint="@string/fname"
+                android:inputType="textPersonName"
+                android:textSize="14sp" />
 
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:entries="@array/genders" />
+            <EditText
+                android:id="@+id/element_lname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:ems="10"
+                android:hint="@string/lname"
+                android:inputType="textPersonName"
+                android:textSize="14sp" />
 
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/grade"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <Spinner
-            android:id="@+id/spinner2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:entries="@array/roles" />
-
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/turno"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <Spinner
-            android:id="@+id/spinner3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:entries="@array/turnos" />
+        </LinearLayout>
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:text="@string/genere"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <Spinner
+        android:id="@+id/gender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:entries="@array/genders" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:text="@string/turno"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <Spinner
+        android:id="@+id/group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:entries="@array/turnos" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:text="@string/grade"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <Spinner
+        android:id="@+id/position"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:entries="@array/roles" />
+
+    <Button
+        android:id="@+id/sav_element"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/save_guard_profile" />
+
 </LinearLayout>

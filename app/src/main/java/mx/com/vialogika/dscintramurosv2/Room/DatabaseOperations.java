@@ -282,6 +282,16 @@ public class DatabaseOperations {
         }).start();
     }
 
+    public void saveNewGuard(final Guard guard){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                db.personDao().save(guard.getPaersonData());
+                db.guardDao().save(guard);
+            }
+        }).start();
+    }
+
     public static Handler getHandler() {
         return handler;
     }

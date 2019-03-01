@@ -2,13 +2,17 @@ package mx.com.vialogika.dscintramurosv2;
 
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,9 +27,15 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.IOError;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import mx.com.vialogika.dscintramurosv2.Adapters.ElementAdapter;
 import mx.com.vialogika.dscintramurosv2.Dialogs.NewGuardDialog;
@@ -63,6 +73,7 @@ public class ElementsFragment extends Fragment {
     private List<Guard>        activeGuards = new ArrayList<>();
     private List<Guard>        bajaGuards   = new ArrayList<>();
     private List<CharSequence> gruposStatus = new ArrayList<>();
+    private String currentPhotoPath;
 
     private DatabaseOperations dbo;
 
@@ -126,6 +137,7 @@ public class ElementsFragment extends Fragment {
                 case R.id.add_element_fab:
                     takePicture();
                     Toast.makeText(getContext(), "Hello new guard", Toast.LENGTH_SHORT).show();
+                    break;
                 default:
                     break;
             }
@@ -135,8 +147,31 @@ public class ElementsFragment extends Fragment {
     private void takePicture(){
         Intent takepictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takepictureIntent.resolveActivity(getActivity().getPackageManager()) != null){
-            startActivityForResult(takepictureIntent,REQUEST_IMAGE_CAPTURE);
+            File photofile = null;
+            try{
+                photofile = createImageFIle();
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+            if (photofile != null){
+                Uri PhotoUri = FileProvider.getUriForFile(getContext(),getContext().getApplicationContext().getPackageName() + ".fileprovider",photofile);
+                takepictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,PhotoUri);
+                startActivityForResult(takepictureIntent,REQUEST_IMAGE_CAPTURE);
+            }
+
         }
+    }
+
+    private File createImageFIle()throws IOException{
+        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(new Date());
+        String imageFileName = "DSCProfile_" + timestamp + "_";
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        if (!storageDir.exists()){
+            storageDir.mkdir();
+        }
+        File image = File.createTempFile(imageFileName,".jpg",storageDir);
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 
     @Override
@@ -149,9 +184,24 @@ public class ElementsFragment extends Fragment {
     }
 
     private void showNewElementDialog(Bitmap thumb){
-        NewGuardDialog dialog = new NewGuardDialog();
+        final NewGuardDialog dialog = new NewGuardDialog();
         dialog.setProfileImage(thumb);
+        dialog.setCallback(new NewGuardDialog.NewGuardCallback() {
+            @Override
+            public void onGuardSave(Guard guard) {
+                guard.getPaersonData().setPersonProfilePhotoPath(currentPhotoPath);
+                guard.setGuardPhotoPath(currentPhotoPath);
+                saveNewGuard(guard);
+                dialog.dismiss();
+            }
+        });
         dialog.show(getActivity().getSupportFragmentManager(),"NEW_GUARD");
+    }
+
+    private void saveNewGuard(Guard guard){
+        filter.add(guard);
+        adapter.notifyDataSetChanged();
+        dbo.saveNewGuard(guard);
     }
 
     private AdapterView.OnItemSelectedListener spListener = new AdapterView.OnItemSelectedListener() {

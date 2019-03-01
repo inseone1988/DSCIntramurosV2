@@ -26,7 +26,7 @@ import android.widget.FrameLayout;
 import mx.com.vialogika.dscintramurosv2.Network.NetworkOperations;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,PlantillaView.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, PlantillaView.OnFragmentInteractionListener {
 
     private NetworkOperations ntwop;
     private FrameLayout       fragmentContainer;
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        loadfragment(PlantillaView.newInstance("",""));
+        loadfragment(PlantillaView.newInstance("", ""));
         getItems();
         setupDrawer();
         ntwop = NetworkOperations.getInstance(this);
@@ -65,12 +65,12 @@ public class MainActivity extends AppCompatActivity
         ntwop.SyncGuards(1);
     }
 
-    private void SyncApostamientos(){
+    private void SyncApostamientos() {
         ntwop.SyncApostamientos(1);
     }
 
     private void askPermission() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, 150);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET,Manifest.permission.WRITE_EXTERNAL_STORAGE}, 150);
     }
 
     private void loadfragment(Fragment fragment) {
@@ -82,7 +82,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private boolean hasPermission() {
-        return ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED;
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
     private void setupDrawer() {
@@ -145,13 +146,13 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        switch(id){
+        switch (id) {
             case R.id.nav_camera:
-                PlantillaView plantillaView = PlantillaView.newInstance("","");
+                PlantillaView plantillaView = PlantillaView.newInstance("", "");
                 loadfragment(plantillaView);
                 break;
             case R.id.nav_gallery:
-                ElementsFragment elementsFragment = ElementsFragment.newInstance("","");
+                ElementsFragment elementsFragment = ElementsFragment.newInstance("", "");
                 loadfragment(elementsFragment);
                 setTitle("Guardias");
                 break;

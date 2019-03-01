@@ -58,6 +58,7 @@
     <string name="active"><b>Status</b>: %1$s</string>
     <string name="guard_status">Guard status</string>
     <string name="name">Nombre</string>
-    <string name="fname">Apellido materno</string>
-    <string name="lname">Apellido paterno</string>
+    <string name="fname">Apellido paterno</string>
+    <string name="lname">Apellido materno</string>
+    <string name="save_guard_profile">Guardar elemento</string>
 </resources>
