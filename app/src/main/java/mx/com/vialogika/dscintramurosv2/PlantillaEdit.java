@@ -306,7 +306,7 @@ public class PlantillaEdit extends AppCompatActivity {
     }
 
     private void sendPlantillaToServer(){
-        NetworkOperations nop = NetworkOperations.getInstance(this);
+        NetworkOperations nop = NetworkOperations.getInstance();
         nop.sendPlantilla(grupo);
     }
 

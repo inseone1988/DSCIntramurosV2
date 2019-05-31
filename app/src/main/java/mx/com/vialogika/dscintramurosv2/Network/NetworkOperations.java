@@ -1,9 +1,12 @@
 package mx.com.vialogika.dscintramurosv2.Network;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.widget.ListPopupWindow;
 import android.widget.Toast;
 
@@ -21,12 +24,14 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import mx.com.vialogika.dscintramurosv2.GlobalAplication;
 import mx.com.vialogika.dscintramurosv2.Room.Apostamiento;
 import mx.com.vialogika.dscintramurosv2.Room.DatabaseOperations;
 import mx.com.vialogika.dscintramurosv2.Room.Guard;
 import mx.com.vialogika.dscintramurosv2.Room.Incidencia;
 import mx.com.vialogika.dscintramurosv2.Room.Person;
 import mx.com.vialogika.dscintramurosv2.Room.Plantilla;
+import mx.com.vialogika.dscintramurosv2.Utils.UserKeys;
 
 public class NetworkOperations {
 
@@ -34,29 +39,30 @@ public class NetworkOperations {
     public static final String MODE_SYNC                = "mode_sync";
     public static final String MODE_SEND                = "mode_send";
     public static final int    SEND_PLANTILLA_TO_SERVER = 154879;
-    public static final String SERVER_URL_PREFIX        = "https://www.vialogika.com.mx/dscic/";
+    //public static final String SERVER_URL_PREFIX        = "https://www.vialogika.com.mx/dscic/";
+    public static final String SERVER_URL_PREFIX        = "http://192.168.2.2/dscic/";
     public static final String DEFAULT_HANDLER          = "raw.php";
 
     private static volatile NetworkOperations instance;
     private static          RequestQueue      rq;
 
-    private              Context mContext;
+    private static          Context mContext;
     private static final Handler UIHandler = new Handler(Looper.getMainLooper());
 
-    private NetworkOperations(Context context) {
-        mContext = context;
+    private NetworkOperations() {
+        mContext = GlobalAplication.getAppContext();
         if (instance != null) {
             throw new RuntimeException("You should use getInstance() method to get the an instance of this class.");
         }
     }
 
-    public static NetworkOperations getInstance(Context context) {
+    public static NetworkOperations getInstance() {
         if (rq == null) {
-            rq = Volley.newRequestQueue(context);
+            rq = Volley.newRequestQueue(GlobalAplication.getAppContext());
         }
         if (instance == null) {
             synchronized (NetworkOperations.class) {
-                if (instance == null) instance = new NetworkOperations(context);
+                if (instance == null) instance = new NetworkOperations();
             }
         }
         return instance;
@@ -64,6 +70,55 @@ public class NetworkOperations {
 
     private String defaultURL() {
         return SERVER_URL_PREFIX + DEFAULT_HANDLER;
+    }
+
+    public void getApiKey(final SimpleNetworkCallback<JSONObject> cb){
+        ServerRequest request = new ServerRequest(Request.Method.POST, defaultURL(), null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try{
+                    if (response.getBoolean("success")){
+                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GlobalAplication.getAppContext());
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putString(UserKeys.SP_API_KEY,response.getString("auth"));
+                        editor.apply();
+                        cb.onResponse(response);
+                    }else{
+                        cb.onResponse(response);
+                    }
+                }catch(JSONException e){
+
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        rq.add(request);
+    }
+
+    public void downloadDeviceData(final SimpleNetworkCallback<JSONObject> cb){
+        JSONObject params = new JSONObject();
+        try{
+            params.put("function","getDeviceData");
+        }catch(JSONException e){
+            Log.d("Volley","Failed to set paramteres");
+        }
+        ServerRequest request = new ServerRequest(Request.Method.POST, defaultURL(), params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                cb.onResponse(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        rq.add(request);
     }
 
     public void SyncGuards(int siteid) {
@@ -145,7 +200,7 @@ public class NetworkOperations {
                 List<Plantilla>  edo        = (List<Plantilla>) r[1];
                 List<Incidencia> incidences = (List<Incidencia>) r[0];
                 if (edo.size() > 0) {
-                    String mode = edo.get(0).getEdoFuerzaPlantillaId() == null ? MODE_SEND : MODE_UPDATE;
+                    String     mode   = edo.get(0).getEdoFuerzaPlantillaId() == null ? MODE_SEND : MODE_UPDATE;
                     JSONObject params = new JSONObject();
                     JSONArray  data   = new JSONArray();
                     JSONArray  inc    = new JSONArray();
@@ -178,12 +233,12 @@ public class NetworkOperations {
                         public void onResponse(JSONObject response) {
                             try {
                                 if (response.getBoolean("success")) {
-                                    JSONArray savedPlantillas = response.getJSONArray("plantilla");
-                                    List<Plantilla> updated = new ArrayList<>();
+                                    JSONArray       savedPlantillas = response.getJSONArray("plantilla");
+                                    List<Plantilla> updated         = new ArrayList<>();
                                     for (int i = 0; i < savedPlantillas.length(); i++) {
                                         updated.add(new Plantilla(savedPlantillas.getJSONObject(i)));
                                     }
-                                    dbo.updateEdoData(grupo,updated);
+                                    dbo.updateEdoData(grupo, updated);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -214,6 +269,11 @@ public class NetworkOperations {
         void onNetworkResponse(Object response);
 
         void onNetworkRequestError(VolleyError e);
+    }
+
+    public interface SimpleNetworkCallback<T>{
+        void onResponse(T response);
+        void onVolleyError(T response,VolleyError error);
     }
 
     public Context getContext() {

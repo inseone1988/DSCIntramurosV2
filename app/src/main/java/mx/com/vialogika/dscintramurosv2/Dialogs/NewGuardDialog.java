@@ -136,6 +136,22 @@ public class NewGuardDialog extends DialogFragment {
         this.callback = callback;
     }
 
+    public void setGuard(Guard guard) {
+        this.guard = guard;
+        setCurrentdata();
+    }
+    private void setCurrentdata(){
+        if (guard.getPaersonData() != null){
+            Person person = guard.getPaersonData();
+            if (!guard.getGuardPhotoPath().equals("")){
+
+            }
+            nameHolder.setText(person.getPersonName());
+            fnameHolder.setText(person.getPersonFname());
+            lnameHolder.setText(person.getPersonLname());
+        }
+    }
+
     public interface NewGuardCallback{
         void onGuardSave(Guard guard);
     }

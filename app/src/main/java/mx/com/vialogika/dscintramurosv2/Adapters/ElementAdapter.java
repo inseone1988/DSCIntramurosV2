@@ -18,6 +18,9 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
+import mx.com.vialogika.dscintramurosv2.Dialogs.NewGuardDialog;
+import mx.com.vialogika.dscintramurosv2.ElementAdapterOnClickListener;
+import mx.com.vialogika.dscintramurosv2.ElementsFragment;
 import mx.com.vialogika.dscintramurosv2.R;
 import mx.com.vialogika.dscintramurosv2.Room.Guard;
 
@@ -25,11 +28,13 @@ public class ElementAdapter extends RecyclerView.Adapter<ElementAdapter.ElementV
 
     private Context     mContext;
     private List<Guard> dataset;
+    private ElementInterface cb;
 
     private int position;
 
-    public ElementAdapter(List<Guard> dataset) {
+    public ElementAdapter(List<Guard> dataset,ElementInterface mcb) {
         this.dataset = dataset;
+        this.cb = mcb;
     }
 
     public static class ElementViewHolder extends RecyclerView.ViewHolder{
@@ -57,6 +62,7 @@ public class ElementAdapter extends RecyclerView.Adapter<ElementAdapter.ElementV
 
     @Override
     public void onBindViewHolder(@NonNull ElementViewHolder elementViewHolder, int i) {
+        final int position = i;
         Guard current = dataset.get(i);
         if (photoExists(current.getGuardPhotoPath())){
             elementViewHolder.profilePicholder.setImageBitmap(BitmapFactory.decodeFile(current.getGuardPhotoPath()));
@@ -66,23 +72,18 @@ public class ElementAdapter extends RecyclerView.Adapter<ElementAdapter.ElementV
         elementViewHolder.elmentPosition.setText(String.format(res.getString(R.string.guard_position),current.getGuardRange()));
         elementViewHolder.elementCreated.setText(String.format(res.getString(R.string.create_date),current.getPaersonData().getPersonCreated()));
         elementViewHolder.elementStatus.setText(String.format(res.getString(R.string.active),setElementStatus(current.getGuardStatus())));
-        elementViewHolder.profilePicholder.setOnClickListener(listener);
+        elementViewHolder.profilePicholder.setOnClickListener(new ElementAdapterOnClickListener(i){
+            @Override
+            public void onClick(View v) {
+                super.onClick(v);
+                cb.OnElementSelect(position);
+            }
+        });
     }
 
     private String setElementStatus(int status){
         return status == 1 ? "Activo" : "Baja";
     }
-    
-    private View.OnClickListener listener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch(v.getId()){
-                case R.id.profile_picture:
-                    Toast.makeText(mContext, "Edit guard", Toast.LENGTH_SHORT).show();
-                    break;
-            }
-        }
-    };
 
     private boolean photoExists(String path){
         File picture = new File(path);
@@ -99,5 +100,9 @@ public class ElementAdapter extends RecyclerView.Adapter<ElementAdapter.ElementV
 
     public Context getContext() {
         return mContext;
+    }
+
+    public interface ElementInterface{
+        void OnElementSelect(int position);
     }
 }

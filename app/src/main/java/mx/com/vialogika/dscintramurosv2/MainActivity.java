@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity
         loadfragment(PlantillaView.newInstance("", ""));
         getItems();
         setupDrawer();
-        ntwop = NetworkOperations.getInstance(this);
+        ntwop = NetworkOperations.getInstance();
         syncGuards();
         SyncApostamientos();
     }

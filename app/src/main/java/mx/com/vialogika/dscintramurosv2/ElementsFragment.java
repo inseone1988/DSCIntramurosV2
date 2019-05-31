@@ -158,7 +158,6 @@ public class ElementsFragment extends Fragment {
                 takepictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,PhotoUri);
                 startActivityForResult(takepictureIntent,REQUEST_IMAGE_CAPTURE);
             }
-
         }
     }
 
@@ -198,6 +197,19 @@ public class ElementsFragment extends Fragment {
         dialog.show(getActivity().getSupportFragmentManager(),"NEW_GUARD");
     }
 
+    public void editGuard(int position){
+        Guard edit = filter.get(position);
+        NewGuardDialog dialog = new NewGuardDialog();
+        dialog.setGuard(edit);
+        dialog.setCallback(new NewGuardDialog.NewGuardCallback() {
+            @Override
+            public void onGuardSave(Guard guard) {
+                Toast.makeText(getContext(), "GuardEdited", Toast.LENGTH_SHORT).show();
+            }
+        });
+        dialog.show(getActivity().getSupportFragmentManager(),"NEW_GUARD");
+    }
+
     private void saveNewGuard(Guard guard){
         filter.add(guard);
         adapter.notifyDataSetChanged();
@@ -227,7 +239,12 @@ public class ElementsFragment extends Fragment {
     };
 
     private void setupRecyclerView() {
-        adapter = new ElementAdapter(filter);
+        adapter = new ElementAdapter(filter, new ElementAdapter.ElementInterface() {
+            @Override
+            public void OnElementSelect(int position) {
+
+            }
+        });
         layoutManager = new LinearLayoutManager(getContext());
         rv.setLayoutManager(layoutManager);
         rv.setAdapter(adapter);

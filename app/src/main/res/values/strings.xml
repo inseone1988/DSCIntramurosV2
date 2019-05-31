@@ -61,4 +61,7 @@
     <string name="fname">Apellido paterno</string>
     <string name="lname">Apellido materno</string>
     <string name="save_guard_profile">Guardar elemento</string>
+    <string name="app_permissions">Permisos</string>
+    <string name="app_permissions_denied_message">No se han otorgado los permisos necesarios para que la aplicacion funcione.</string>
+    <string name="not_allowed_device">Dispositivo no autorizado</string>
 </resources>
