@@ -62,7 +62,7 @@ public class PlantillaEdit extends AppCompatActivity {
         getIntentExtras();
         getitems();
         setToolbarTitle();
-        dbo = DatabaseOperations.getInstance(this);
+        dbo = DatabaseOperations.getInstance();
         getObjects();
     }
 

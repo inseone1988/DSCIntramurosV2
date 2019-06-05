@@ -7,11 +7,18 @@ import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import mx.com.vialogika.dscintramurosv2.GlobalAplication;
 import mx.com.vialogika.dscintramurosv2.Utils.CryptoHash;
 import mx.com.vialogika.dscintramurosv2.Utils.TimeUtils;
 
@@ -25,15 +32,15 @@ public class DatabaseOperations {
 
     }
 
-    public static DatabaseOperations getInstance(Context context) {
+    public static DatabaseOperations getInstance() {
         if (db == null) {
-            db = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "Database")
+            db = Room.databaseBuilder(GlobalAplication.getAppContext(), AppDatabase.class, "Database")
                     .fallbackToDestructiveMigration()
                     .build();
         }
         if (dbo == null) {
             synchronized (DatabaseOperations.class) {
-                if (dbo == null) dbo = new DatabaseOperations(context);
+                if (dbo == null) dbo = new DatabaseOperations(GlobalAplication.getAppContext());
             }
         }
         return dbo;
@@ -275,6 +282,10 @@ public class DatabaseOperations {
                     Person person = db.personDao().getPersonByid(guards.get(i).getGuardId());
                     if (person != null){
                         guards.get(i).setPaersonData(person);
+                    }else {
+                        //Thank you so much Intellij for telling me that
+                        guards.remove(i);
+                        i = i-1;
                     }
                 }
                 cb.onOperationFinished(guards);
@@ -288,6 +299,53 @@ public class DatabaseOperations {
             public void run() {
                 db.personDao().save(guard.getPaersonData());
                 db.guardDao().save(guard);
+            }
+        }).start();
+    }
+
+    public void saveSiteIncidence(final SiteIncidence incidence){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                long saved = db.incodenceDao().save(incidence);
+                if (saved != 0){
+                    Gson gson = new Gson();
+                    try{
+                        JSONObject incident = new JSONObject(new String(gson.toJson(incidence,SiteIncidence.class)));
+
+                    }catch(JSONException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+    }
+
+    public void updateGuard(final Guard guard,@Nullable final UIThreadOperation cb){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final int saved = db.guardDao().update(guard);
+                if (guard.getPaersonData() != null){
+                    updatePerson(guard.getPaersonData());
+                }
+                getHandler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (cb != null){
+                            cb.onOperationFinished(saved);
+                        }
+                    }
+                });
+            }
+        }).start();
+    }
+
+    public  void updatePerson(final Person person){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final int saved = db.personDao().update(person);
             }
         }).start();
     }

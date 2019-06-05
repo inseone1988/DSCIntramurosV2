@@ -2,8 +2,8 @@
     <string name="app_name">DSCIntramurosV2</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">Seguridad Patrimonial</string>
+    <string name="nav_header_subtitle">seguridad intramuros</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
@@ -64,4 +64,12 @@
     <string name="app_permissions">Permisos</string>
     <string name="app_permissions_denied_message">No se han otorgado los permisos necesarios para que la aplicacion funcione.</string>
     <string name="not_allowed_device">Dispositivo no autorizado</string>
+    <string name="search_prompt_hint">Ingrese busqueda</string>
+    <string name="provider">Proveedor</string>
+    <string name="person">Persona</string>
+    <string name="vetado_mane"><b>Nombre :</b> %1$s</string>
+    <string name="vetado_provider"><b>Provedor :</b> %1$s</string>
+    <string name="vetado_role"><b>Tipo de veto :</b> %1$s</string>
+    <string name="vetado_due"><b>Vencimiento :</b> %1$s</string>
+    <string name="search_guard">Buscar elemento</string>
 </resources>

@@ -3,8 +3,10 @@ package mx.com.vialogika.dscintramurosv2.Dialogs;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -17,14 +19,19 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import mx.com.vialogika.dscintramurosv2.Network.NetworkOperations;
 import mx.com.vialogika.dscintramurosv2.R;
 import mx.com.vialogika.dscintramurosv2.Room.DatabaseOperations;
 import mx.com.vialogika.dscintramurosv2.Room.Guard;
 import mx.com.vialogika.dscintramurosv2.Room.Person;
+import mx.com.vialogika.dscintramurosv2.Utils.GuardEditMode;
+import mx.com.vialogika.dscintramurosv2.Utils.UserKeys;
 
 public class NewGuardDialog extends DialogFragment {
 
@@ -34,12 +41,14 @@ public class NewGuardDialog extends DialogFragment {
     private TextView nameHolder,fnameHolder,lnameHolder;
     private Spinner genre,group,position;
 
-    private Guard guard = new Guard();
-    private Person person = new Person();
+    private Guard guard;
+    private Person person ;
     
     private Button saveElement;
 
     private String name, fName, lName;
+
+    private GuardEditMode mode = GuardEditMode.NEW_GUARD;
 
     private NewGuardCallback callback;
 
@@ -47,8 +56,16 @@ public class NewGuardDialog extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootview = inflater.inflate(R.layout.new_guard_dialog, container,false);
+        if (guard==null){
+            guard = new Guard();
+            person = new Person();
+        }else{
+            person = guard.getPaersonData();
+            downloadProfileImage();
+        }
         getitems(rootview);
         setProfileimage();
+        setCurrentdata();
         return rootview;
     }
 
@@ -75,7 +92,22 @@ public class NewGuardDialog extends DialogFragment {
         }
     };
 
+    private void downloadProfileImage(){
+        NetworkOperations.getInstance().getImageFromServer(guard, new NetworkOperations.SimpleNetworkCallback<Bitmap>() {
+            @Override
+            public void onResponse(Bitmap response) {
+                profileImageHolder.setImageBitmap(response);
+            }
+
+            @Override
+            public void onVolleyError(Bitmap response, VolleyError error) {
+                Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void getValues(){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         name = nameHolder.getText().toString();
         fName = fnameHolder.getText().toString();
         lName = lnameHolder.getText().toString();
@@ -85,8 +117,10 @@ public class NewGuardDialog extends DialogFragment {
         person.setPersonLname(lName);
         person.setPersonGender(genre.getSelectedItem().toString());
         person.setPersonPosition(position.getSelectedItem().toString());
-        guard.setGuardProviderId(1);
-        guard.setGuardSite(String.valueOf(1));
+        person.setPersonSiteId(preferences.getInt(UserKeys.SP_SITE_ID,0));
+        person.setPersonProviderid(preferences.getInt(UserKeys.SP_PROVIDER_ID,0));
+        guard.setGuardProviderId(preferences.getInt(UserKeys.SP_PROVIDER_ID,0));
+        guard.setGuardSite(String.valueOf(preferences.getInt(UserKeys.SP_SITE_ID,0)));
         guard.setGuardRange(person.getPersonPosition());
         guard.setPaersonData(person);
         guard.setGuardStatus(1);
@@ -108,6 +142,19 @@ public class NewGuardDialog extends DialogFragment {
 
     private void saveElement(){
         if (validValues()){
+            if (mode.equals(GuardEditMode.EXISTENT_GUARD)){
+                NetworkOperations.getInstance().updateGuard(guard, new NetworkOperations.SimpleNetworkCallback<Integer>() {
+                    @Override
+                    public void onResponse(Integer response) {
+
+                    }
+
+                    @Override
+                    public void onVolleyError(Integer response, VolleyError error) {
+
+                    }
+                });
+            }
             callback.onGuardSave(guard);
         }
     }
@@ -138,7 +185,7 @@ public class NewGuardDialog extends DialogFragment {
 
     public void setGuard(Guard guard) {
         this.guard = guard;
-        setCurrentdata();
+        mode = GuardEditMode.EXISTENT_GUARD;
     }
     private void setCurrentdata(){
         if (guard.getPaersonData() != null){
@@ -152,7 +199,14 @@ public class NewGuardDialog extends DialogFragment {
         }
     }
 
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        callback.onDialogDismiss();
+    }
+
     public interface NewGuardCallback{
         void onGuardSave(Guard guard);
+        void onDialogDismiss();
     }
 }

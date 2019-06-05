@@ -25,7 +25,7 @@
     <show-object-properties value="true" />
     <loaded-nodes>
       <connection connection-id="1e098b10-fdb7-4c91-b114-012b07e640bf">
-        <schema name="main" object-types="table, view" />
+        <schema name="main" object-types="view, index, constraint, table, dataset trigger, column" />
       </connection>
     </loaded-nodes>
   </component>
@@ -41,6 +41,7 @@
     <connection id="1e098b10-fdb7-4c91-b114-012b07e640bf" />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
+    <filter-actions connection-id="1e098b10-fdb7-4c91-b114-012b07e640bf" dataset="main.Persons" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="1e098b10-fdb7-4c91-b114-012b07e640bf" dataset="main.Plantillas" active-filter-id="" />
     <filter-actions connection-id="1e098b10-fdb7-4c91-b114-012b07e640bf" dataset="main.Guards" active-filter-id="EMPTY_FILTER" />
   </component>
@@ -82,7 +83,7 @@
           <port value="" />
           <database value="" />
           <files>
-            <file path="C:\Users\Javier Ramirez\Documents\AndroidStudio\DeviceExplorer\motorola-moto_e5-192.168.2.2_5555\data\data\mx.com.vialogika.dscintramurosv2\databases\Database" schema="main" />
+            <file path="C:\Users\Javier Ramirez\Documents\AndroidStudio\DeviceExplorer\motorola-moto_e5-192.168.2.6_5555\data\data\mx.com.vialogika.dscintramurosv2\databases\Database" schema="main" />
           </files>
           <os-authentication value="false" />
           <empty-authentication value="false" />

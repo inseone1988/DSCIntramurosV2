@@ -64,8 +64,10 @@ public class ElementAdapter extends RecyclerView.Adapter<ElementAdapter.ElementV
     public void onBindViewHolder(@NonNull ElementViewHolder elementViewHolder, int i) {
         final int position = i;
         Guard current = dataset.get(i);
-        if (photoExists(current.getGuardPhotoPath())){
+        if (photoExists(current.getGuardPhotoPath()) && current.hasLocalProfilePhoto()){
             elementViewHolder.profilePicholder.setImageBitmap(BitmapFactory.decodeFile(current.getGuardPhotoPath()));
+        }else{
+            elementViewHolder.profilePicholder.setImageResource(R.drawable.ic_guard);
         }
         Resources res = getContext().getResources();
         elementViewHolder.elementName.setText(String.format(res.getString(R.string.guard_name),current.getPaersonData().getPersonFullName()));

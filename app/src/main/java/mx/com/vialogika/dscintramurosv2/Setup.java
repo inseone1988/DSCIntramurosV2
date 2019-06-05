@@ -3,6 +3,7 @@ package mx.com.vialogika.dscintramurosv2;
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.CountDownTimer;
@@ -120,7 +121,7 @@ public class Setup extends AppCompatActivity {
 
     private void requestDelay(){
         status.setText("Waiting for app to finish load...");
-        new CountDownTimer(10000,1000){
+        new CountDownTimer(3000,1000){
             @Override
             public void onTick(long millisUntilFinished) {
 
@@ -163,6 +164,7 @@ public class Setup extends AppCompatActivity {
                                         try{
                                             if (response.getBoolean("success")){
                                                 //Data has been succesfully downloaded, now we can start
+                                                startMainApp();
                                             }
                                         }catch(JSONException e) {
                                             status.setText("Sorry, response looks like spaguetti and I can't read it please give this text to the fool is programming me \n" + e.getMessage());
@@ -189,10 +191,18 @@ public class Setup extends AppCompatActivity {
                 });
             }else{
                 status.setText("Couldn't retrieve phone info. Check all permissions has been granted.");
+                askPermissions();
             }
         }else {
             //Data has been downloaded before go main view
             status.setText("Got credentials...rock and roll");
+            startMainApp();
         }
+    }
+
+    private void startMainApp(){
+        Intent intent = new Intent(this,MainActivity.class);
+        startActivity(intent);
+
     }
 }

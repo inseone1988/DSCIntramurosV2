@@ -7,6 +7,10 @@ import android.arch.persistence.room.PrimaryKey;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+
+import mx.com.vialogika.dscintramurosv2.GlobalAplication;
+
 @Entity(tableName = "Guards")
 public class Guard {
     @PrimaryKey(autoGenerate = true)
@@ -76,11 +80,16 @@ public class Guard {
         this.guardSite = guard.getGuardSite();
         this.guardRange = guard.getGuardRange();
         this.guardHash = guard.getGuardHash();
-        this.guardPhotoPath = guard.getGuardPhotoPath();
+        if (!this.hasLocalProfilePhoto()) this.guardPhotoPath = guard.getGuardPhotoPath();
         this.guardGroup = guard.getGuardGroup();
         this.guardTurno = guard.getGuardTurno();
         this.guardStatus = guard.getGuardStatus();
         this.guardBajaTimestamp = guard.getGuardBajaTimestamp();
+    }
+
+    public void save(){
+        DatabaseOperations op = DatabaseOperations.getInstance();
+        op.updateGuard(this,null);
     }
 
     public int getLocalId() {
@@ -145,6 +154,9 @@ public class Guard {
 
     public void setGuardPhotoPath(String guardPhotoPath) {
         this.guardPhotoPath = guardPhotoPath;
+        if (getPaersonData() != null){
+            getPaersonData().setPersonProfilePhotoPath(guardPhotoPath);
+        }
     }
 
     public String getGuardGroup() {
@@ -197,5 +209,21 @@ public class Guard {
 
     public boolean isActive(){
         return this.guardStatus != 0;
+    }
+
+    public boolean networkSaved(){
+        return this.guardId != 0;
+    }
+
+    public boolean hasLocalProfilePhoto(){
+        if (this.guardPhotoPath != null && !this.guardPhotoPath.equals("null")&& !this.guardPhotoPath.equals("")&& !this.guardPhotoPath.contains("/dscic")){
+            return hasLocalPhoto();
+        }
+        return false;
+    }
+
+    private boolean hasLocalPhoto(){
+        File file = new File(this.guardPhotoPath);
+        return file.exists();
     }
 }

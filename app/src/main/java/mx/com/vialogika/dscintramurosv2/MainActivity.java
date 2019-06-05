@@ -1,9 +1,11 @@
 package mx.com.vialogika.dscintramurosv2;
 
 import android.Manifest;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -24,12 +26,17 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import mx.com.vialogika.dscintramurosv2.Network.NetworkOperations;
+import mx.com.vialogika.dscintramurosv2.Utils.UserKeys;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, PlantillaView.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        PlantillaView.OnFragmentInteractionListener,
+        VetadoFragment.OnFragmentInteractionListener {
 
     private NetworkOperations ntwop;
     private FrameLayout       fragmentContainer;
+
+    private int siteid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +46,15 @@ public class MainActivity extends AppCompatActivity
         getItems();
         setupDrawer();
         ntwop = NetworkOperations.getInstance();
+        getSiteData();
         syncGuards();
         SyncApostamientos();
+    }
+
+    private void getSiteData(){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        siteid = preferences.getInt(UserKeys.SP_SITE_ID,0);
+
     }
 
     private void getItems() {
@@ -62,11 +76,11 @@ public class MainActivity extends AppCompatActivity
             askPermission();
             return;
         }
-        ntwop.SyncGuards(1);
+        ntwop.SyncGuards(siteid);
     }
 
     private void SyncApostamientos() {
-        ntwop.SyncApostamientos(1);
+        ntwop.SyncApostamientos(siteid);
     }
 
     private void askPermission() {
@@ -76,7 +90,7 @@ public class MainActivity extends AppCompatActivity
     private void loadfragment(Fragment fragment) {
         FragmentManager     fragmentManager     = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.fragment_container, fragment)
+        fragmentTransaction.replace(R.id.fragment_container, fragment)
                 .addToBackStack(null)
                 .commit();
     }
@@ -150,6 +164,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_camera:
                 PlantillaView plantillaView = PlantillaView.newInstance("", "");
                 loadfragment(plantillaView);
+                setTitle("Reporte de plantillas");
                 break;
             case R.id.nav_gallery:
                 ElementsFragment elementsFragment = ElementsFragment.newInstance("", "");
@@ -160,12 +175,11 @@ public class MainActivity extends AppCompatActivity
 
                 break;
             case R.id.nav_manage:
-
+                VetadoFragment vetadoFragment = VetadoFragment.newInstance("","");
+                loadfragment(vetadoFragment);
+                setTitle("Acceso Retringido");
                 break;
             case R.id.nav_share:
-
-                break;
-            case R.id.nav_send:
 
                 break;
         }

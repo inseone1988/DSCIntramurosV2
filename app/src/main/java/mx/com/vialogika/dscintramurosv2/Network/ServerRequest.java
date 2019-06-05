@@ -38,7 +38,7 @@ public class ServerRequest extends JsonObjectRequest {
             headers.put("request","true");
             headers.put("identifier",deviceId);
         }else{
-            headers.put("authorization",authToken);
+            headers.put("bearer",authToken);
         }
         return headers;
     }

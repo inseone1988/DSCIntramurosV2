@@ -24,7 +24,7 @@ public class ReportedPlantillaView {
 
     public static ReportedPlantillaView getInstance(Context context, final String grupo){
         final User                  userdata = new User(context);
-        DatabaseOperations          dbo      = DatabaseOperations.getInstance(context);
+        DatabaseOperations          dbo      = DatabaseOperations.getInstance();
         final ReportedPlantillaView plstatus = new ReportedPlantillaView(userdata.getUserSite(),userdata.getUsersCorp(),grupo,new int[]{0,0});
         dbo.getGroupData(grupo, new DatabaseOperations.backgroundOperation() {
             @Override

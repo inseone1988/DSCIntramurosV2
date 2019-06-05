@@ -16,6 +16,8 @@ import android.support.v4.content.FileProvider;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -33,12 +36,14 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import mx.com.vialogika.dscintramurosv2.Adapters.ElementAdapter;
 import mx.com.vialogika.dscintramurosv2.Dialogs.NewGuardDialog;
+import mx.com.vialogika.dscintramurosv2.Network.NetworkOperations;
 import mx.com.vialogika.dscintramurosv2.Room.DatabaseOperations;
 import mx.com.vialogika.dscintramurosv2.Room.Guard;
 
@@ -74,6 +79,8 @@ public class ElementsFragment extends Fragment {
     private List<Guard>        bajaGuards   = new ArrayList<>();
     private List<CharSequence> gruposStatus = new ArrayList<>();
     private String currentPhotoPath;
+
+    private EditText searchbox;
 
     private DatabaseOperations dbo;
 
@@ -119,7 +126,7 @@ public class ElementsFragment extends Fragment {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_elements, container, false);
         getElements(root);
-        dbo = DatabaseOperations.getInstance(getContext());
+        dbo = DatabaseOperations.getInstance();
         loadGuards();
         return root;
     }
@@ -128,6 +135,47 @@ public class ElementsFragment extends Fragment {
         rv = rootView.findViewById(R.id.element_recyclerview);
         addElementDFab = rootView.findViewById(R.id.add_element_fab);
         addElementDFab.setOnClickListener(listener);
+        searchbox = rootView.findViewById(R.id.searchg);
+        searchbox.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                searchGuardByName(s.toString());
+            }
+        });
+    }
+
+    private void searchGuardByName(String searchString){
+        if (!searchString.equals("")){
+            filter.clear();
+            for (int i = 0; i < activeGuards.size(); i++) {
+                Guard c = activeGuards.get(i);
+                String name = c.getPaersonData().getPersonFullName().toLowerCase();
+                if (name.contains(searchString)){
+                    filter.add(c);
+                }
+            }
+            for (int i = 0; i < bajaGuards.size(); i++) {
+                Guard c = bajaGuards.get(i);
+                String name = c.getPaersonData().getPersonFullName().toLowerCase();
+                if (name.contains(searchString)){
+                    filter.add(c);
+                }
+            }
+            adapter.notifyDataSetChanged();
+        }else{
+            filter.addAll(activeGuards);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     private View.OnClickListener listener = new View.OnClickListener() {
@@ -193,6 +241,11 @@ public class ElementsFragment extends Fragment {
                 saveNewGuard(guard);
                 dialog.dismiss();
             }
+
+            @Override
+            public void onDialogDismiss() {
+                adapter.notifyDataSetChanged();
+            }
         });
         dialog.show(getActivity().getSupportFragmentManager(),"NEW_GUARD");
     }
@@ -206,6 +259,11 @@ public class ElementsFragment extends Fragment {
             public void onGuardSave(Guard guard) {
                 Toast.makeText(getContext(), "GuardEdited", Toast.LENGTH_SHORT).show();
             }
+
+            @Override
+            public void onDialogDismiss() {
+                adapter.notifyDataSetChanged();
+            }
         });
         dialog.show(getActivity().getSupportFragmentManager(),"NEW_GUARD");
     }
@@ -213,7 +271,8 @@ public class ElementsFragment extends Fragment {
     private void saveNewGuard(Guard guard){
         filter.add(guard);
         adapter.notifyDataSetChanged();
-        dbo.saveNewGuard(guard);
+        NetworkOperations.getInstance().saveGuard(guard);
+        //dbo.saveNewGuard(guard);
     }
 
     private AdapterView.OnItemSelectedListener spListener = new AdapterView.OnItemSelectedListener() {
@@ -242,7 +301,7 @@ public class ElementsFragment extends Fragment {
         adapter = new ElementAdapter(filter, new ElementAdapter.ElementInterface() {
             @Override
             public void OnElementSelect(int position) {
-
+                editGuard(position);
             }
         });
         layoutManager = new LinearLayoutManager(getContext());
