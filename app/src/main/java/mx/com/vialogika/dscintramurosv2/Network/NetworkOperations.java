@@ -2,6 +2,7 @@ package mx.com.vialogika.dscintramurosv2.Network;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
@@ -474,6 +475,40 @@ public class NetworkOperations {
         };
         rq.add(ir);
     }
+
+    public void getIncidenceNames(final SimpleNetworkCallback<List<String>> cb){
+        JSONObject params = new JSONObject();
+        try{
+            params.put("function","getIncidenceNames");
+            ServerRequest request = new ServerRequest(Request.Method.POST, defaultURL(), params, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try{
+                        if (response.getBoolean("success")){
+                            JSONArray incodencesnames = response.getJSONArray("incident_names");
+                            List<String> inames = new ArrayList<>();
+                            for (int i = 0; i < incodencesnames.length(); i++) {
+                                JSONObject o = incodencesnames.getJSONObject(i);
+                                inames.add(o.getString("incidence_name"));
+                            }
+                            cb.onResponse(inames);
+                        }
+                    }catch(JSONException e){
+
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    cb.onVolleyError(new ArrayList<String>(),error);
+                }
+            });
+            rq.add(request);
+        }catch(JSONException e ){
+            e.printStackTrace();
+        }
+        }
+
 
     public interface NetworkRequestCallbacks<T> {
         void onNetworkResponse(T response);

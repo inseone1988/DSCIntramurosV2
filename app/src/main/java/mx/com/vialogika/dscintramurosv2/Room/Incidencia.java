@@ -52,6 +52,8 @@ public class Incidencia {
         return incident;
     }
 
+
+
     public int getLocalId() {
         return localId;
     }

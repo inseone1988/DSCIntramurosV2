@@ -8,20 +8,25 @@ import java.util.Locale;
 
 public class TimeUtils {
 
-    public static Date parse(String format,String datetime){
+    public static Date parse(String format, String datetime) {
         SimpleDateFormat formated = new SimpleDateFormat(format, Locale.ENGLISH);
-        try{
+        try {
             return formated.parse(datetime);
-        }catch(ParseException e){
+        } catch (ParseException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public static int unixWithSalt(){
+    public static String nowToString(String format) {
+        SimpleDateFormat formated = new SimpleDateFormat(format, Locale.ENGLISH);
+        return formated.format(new Date());
+    }
+
+    public static int unixWithSalt() {
         //TODO:Generate a unix timestamp convert it to minutes and add a salt
-        int generated = (int)System.currentTimeMillis() / 60000;
-        int salt = (int)(Math.random() * 10);
-        return generated -salt;
+        int generated = (int) System.currentTimeMillis() / 60000;
+        int salt      = (int) (Math.random() * 10);
+        return generated - salt;
     }
 }

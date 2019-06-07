@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".PIEFragment">
+    tools:context=".PIE">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -29,7 +29,6 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.3"
-                    android:src="@drawable/dhl_simple"
                     app:srcCompat="@drawable/ic_dhl_logo" />
 
                 <TextView
@@ -37,21 +36,23 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.7"
+                    android:text="@string/pie"
                     android:textAlignment="center"
-                    android:textSize="20sp" />
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/dsc_light_gray"
                 android:paddingBottom="15dp"
                 android:paddingTop="15dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:text="@string/pie_prompt_descrip" />
             </LinearLayout>
 
             <Spinner
@@ -59,7 +60,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:prompt="@string/event_type_prompt"
                 android:textAlignment="center"></Spinner>
 
             <LinearLayout
@@ -67,10 +67,12 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:id="@+id/test"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.3"
                     android:gravity="center"
+                    android:text="@string/date"
                     android:textSize="18sp" />
 
                 <EditText
@@ -86,6 +88,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.4"
+                    android:enabled="false"
                     android:inputType="time" />
             </LinearLayout>
 
@@ -98,6 +101,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
+                    android:text="@string/sec_sem"
                     android:textSize="24sp" />
 
                 <RadioGroup
@@ -113,13 +117,15 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="0.25"
                         android:textColor="@android:color/white"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:text="@string/gray" />
 
                     <RadioButton
                         android:id="@+id/pie_sem_green"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.25"
+                        android:text="@string/green"
                         android:textColor="@android:color/white"
                         android:textStyle="bold" />
 
@@ -128,6 +134,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.25"
+                        android:text="@string/yellow"
                         android:textColor="@android:color/white"
                         android:textStyle="bold" />
 
@@ -137,7 +144,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="0.25"
                         android:textColor="@android:color/white"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:text="@string/red" />
                 </RadioGroup>
 
                 <LinearLayout
@@ -148,23 +156,16 @@
 
                     <CheckBox
                         android:id="@+id/responsible"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.5"
-                        android:gravity="center" />
+                        android:gravity="center"
+                        android:text="@string/responsible_identified" />
 
-                    <CheckBox
-                        android:id="@+id/evidence_taked"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.5"
-                        android:gravity="center" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/dsc_light_gray"
                     android:orientation="vertical">
 
                     <TextView
@@ -173,6 +174,7 @@
                         android:gravity="center"
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
+                        android:text="@string/descriptive_table"
                         android:textSize="20sp" />
 
                     <EditText
@@ -181,6 +183,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
+                        android:hint="@string/event_what"
                         android:inputType="textCapSentences" />
 
                     <EditText
@@ -189,6 +192,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
+                        android:hint="@string/event_how"
                         android:inputType="textCapSentences" />
 
                     <EditText
@@ -197,7 +201,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
-                        android:inputType="textCapSentences" />
+                        android:inputType="textCapSentences"
+                        android:visibility="gone" />
 
                     <EditText
                         android:id="@+id/event_where"
@@ -205,6 +210,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
+                        android:hint="@string/event_where"
                         android:inputType="textCapSentences" />
 
                     <EditText
@@ -212,6 +218,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
                         android:gravity="top"
+                        android:hint="@string/brief_event_description"
                         android:inputType="textMultiLine"
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp" />
@@ -221,7 +228,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:inputType="textCapWords" />
+                        android:inputType="textCapWords"
+                        android:text="@string/person_fullname" />
 
                 </LinearLayout>
 
@@ -236,21 +244,22 @@
                         style="?android:attr/buttonBarStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.5" />
+                        android:layout_weight="0.5"
+                        android:text="@string/select_evidence" />
 
                     <Button
                         android:id="@+id/sign_capture"
                         style="?android:attr/buttonBarStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.5" />
+                        android:layout_weight="0.5"
+                        android:text="@string/signing" />
                 </LinearLayout>
 
                 <Button
                     android:id="@+id/save_and_send"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/guardar_incidencia_label" />
+                    android:layout_height="wrap_content" />
 
                 <TextView
                     android:layout_width="match_parent"

@@ -31,7 +31,8 @@ import mx.com.vialogika.dscintramurosv2.Utils.UserKeys;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         PlantillaView.OnFragmentInteractionListener,
-        VetadoFragment.OnFragmentInteractionListener {
+        VetadoFragment.OnFragmentInteractionListener,
+        PIE.OnFragmentInteractionListener {
 
     private NetworkOperations ntwop;
     private FrameLayout       fragmentContainer;
@@ -172,7 +173,9 @@ public class MainActivity extends AppCompatActivity
                 setTitle("Guardias");
                 break;
             case R.id.nav_slideshow:
-
+                PIE pie = new PIE();
+                loadfragment(pie);
+                setTitle("Incidencia");
                 break;
             case R.id.nav_manage:
                 VetadoFragment vetadoFragment = VetadoFragment.newInstance("","");

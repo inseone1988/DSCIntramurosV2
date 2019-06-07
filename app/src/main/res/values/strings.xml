@@ -72,4 +72,22 @@
     <string name="vetado_role"><b>Tipo de veto :</b> %1$s</string>
     <string name="vetado_due"><b>Vencimiento :</b> %1$s</string>
     <string name="search_guard">Buscar elemento</string>
+    <string name="pie">Parte Informativo Electronico</string>
+    <string name="pie_prompt_descrip">Capture los datos que se piden a continuacion.\n Todos los datos son requeridos</string>
+    <string name="date">Fecha</string>
+    <string name="sec_sem">Semaforo de seguridad</string>
+    <string name="gray">Gris</string>
+    <string name="green">Verde</string>
+    <string name="yellow">Amarillo</string>
+    <string name="red">Rojo</string>
+    <string name="responsible_identified">Responsable identificado</string>
+    <string name="descriptive_table">Tabla descriptiva del evento</string>
+    <string name="event_what">¿Que paso?</string>
+    <string name="event_how">¿Como paso?</string>
+    <string name="event_where">¿Cuando paso?</string>
+    <string name="brief_event_description">Breve descripcion de los hechos</string>
+    <string name="person_fullname">Nombre completo de quien reporta</string>
+    <string name="select_evidence">Seleccionar evidencia</string>
+    <string name="signing">Firmas</string>
+    <string name="save_and_continue">Guardar y enviar</string>
 </resources>
