@@ -1,5 +1,6 @@
 package mx.com.vialogika.dscintramurosv2;
 
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,6 +18,7 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
@@ -24,6 +26,7 @@ import com.divyanshu.draw.activity.DrawingActivity;
 import com.esafirm.imagepicker.features.ImagePicker;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
@@ -193,6 +196,16 @@ public class PIE extends Fragment {
                 case R.id.save_and_send:
                     save();
                     break;
+                case R.id.event_timex:
+                    Calendar c = Calendar.getInstance();
+                    new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                            String hourformat = hourOfDay + " : " + minute;
+                            hora.setText(hourformat);
+                        }
+                    },c.get(Calendar.HOUR_OF_DAY),c.get(Calendar.MINUTE),true).show();
+                    break;
             }
         }
     };
@@ -200,6 +213,7 @@ public class PIE extends Fragment {
     private void getItems(View rootview){
         fecha = rootview.findViewById(R.id.event_time);
         hora = rootview.findViewById(R.id.event_timex);
+        hora.setOnClickListener(listener);
         fecha.setText(TimeUtils.nowToString("yyyy-MM-dd"));
         semaforo = rootview.findViewById(R.id.event_highlight);
         semaforo.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {

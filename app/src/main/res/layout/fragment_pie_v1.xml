@@ -259,7 +259,8 @@
                 <Button
                     android:id="@+id/save_and_send"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:text="@string/save_and_continue" />
 
                 <TextView
                     android:layout_width="match_parent"
