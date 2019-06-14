@@ -1,7 +1,7 @@
 package mx.com.vialogika.dscintramurosv2.Room;
 
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,7 +19,7 @@ public class SiteIncident {
     private String  eventName;
     private String  eventRiskLevel;
     private String  eventResponsable;
-    private String  eventEvidence;
+    private String  eventEvidence = "";
     private String  eventWhat;
     private String  eventHow;
     private String  eventWhen;
@@ -29,9 +29,9 @@ public class SiteIncident {
     private String  eventUser;
     private String  eventUserSite;
     private boolean eventEditStatus;
-    private String  eventSignatureNames;
-    private String  eventSignature;
-    private String  eventSignatureRoles;
+    private String  eventSignatureNames = "";
+    private String  eventSignature = "";
+    private String  eventSignatureRoles = "";
     private String  eventType;
     private String  eventUUID;
     private String  eventUserPosition;
@@ -79,7 +79,7 @@ public class SiteIncident {
         }
     }
 
-    private JSONObject toJSONObject() {
+    public JSONObject toJSONObject() {
         JSONObject siteEvent = new JSONObject();
         try {
             siteEvent.put("event_id", this.eventId);
@@ -216,7 +216,12 @@ public class SiteIncident {
     }
 
     public void setEventEvidence(String eventEvidence) {
-        this.eventEvidence = eventEvidence;
+        String[] evidence = this.eventEvidence.split(",");
+        if (evidence[0].equals("")){
+            this.eventEvidence = eventEvidence;
+        }else{
+            this.eventEvidence = this.eventEvidence + "," + eventEvidence;
+        }
     }
 
     public String getEventWhat() {
@@ -296,7 +301,12 @@ public class SiteIncident {
     }
 
     public void setEventSignatureNames(String eventSignatureNames) {
-        this.eventSignatureNames = eventSignatureNames;
+        String[] snames = this.eventSignatureNames.split(",");
+        if (!snames[0].equals("")){
+            this.eventSignatureNames = this.eventSignature + ","+eventSignatureNames;
+        }else{
+            this.eventSignatureNames = eventSignatureNames;
+        }
     }
 
     public String getEventSignature() {
@@ -304,7 +314,12 @@ public class SiteIncident {
     }
 
     public void setEventSignature(String eventSignature) {
-        this.eventSignature = eventSignature;
+        String[] signatures = this.eventSignature.split(",");
+        if (!signatures[0].equals("")){
+            this.eventSignature =  this.eventSignature  +","+ eventSignature;
+        }else {
+            this.eventSignature = eventSignature;
+        }
     }
 
     public String getEventSignatureRoles() {
@@ -312,7 +327,12 @@ public class SiteIncident {
     }
 
     public void setEventSignatureRoles(String eventSignatureRoles) {
-        this.eventSignatureRoles = eventSignatureRoles;
+        String[] snames = this.eventSignatureRoles.split(",");
+        if (!snames[0].equals("")){
+            this.eventSignatureRoles = this.eventSignatureRoles + ","+eventSignatureRoles;
+        }else{
+            this.eventSignatureRoles = eventSignatureRoles;
+        }
     }
 
     public String getEventType() {

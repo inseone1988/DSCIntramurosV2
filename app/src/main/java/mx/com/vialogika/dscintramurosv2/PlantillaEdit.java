@@ -4,18 +4,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,14 +25,12 @@ import java.util.List;
 import java.util.Locale;
 
 import mx.com.vialogika.dscintramurosv2.Adapters.PlantillaReportViewAdapter;
-import mx.com.vialogika.dscintramurosv2.Adapters.ReportedPlantillaAdapter;
 import mx.com.vialogika.dscintramurosv2.Dialogs.EditAptsDialog;
 import mx.com.vialogika.dscintramurosv2.Network.NetworkOperations;
 import mx.com.vialogika.dscintramurosv2.Room.Apostamiento;
 import mx.com.vialogika.dscintramurosv2.Room.DatabaseOperations;
 import mx.com.vialogika.dscintramurosv2.Room.Guard;
 import mx.com.vialogika.dscintramurosv2.Room.Incidencia;
-import mx.com.vialogika.dscintramurosv2.Room.Person;
 import mx.com.vialogika.dscintramurosv2.Room.Plantilla;
 import mx.com.vialogika.dscintramurosv2.Utils.CryptoHash;
 import mx.com.vialogika.dscintramurosv2.Utils.TimeUtils;
@@ -43,7 +42,7 @@ public class PlantillaEdit extends AppCompatActivity {
     private String turno;
     private DatabaseOperations dbo;
 
-    private RecyclerView rv;
+    private RecyclerView               rv;
     private PlantillaReportViewAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
 

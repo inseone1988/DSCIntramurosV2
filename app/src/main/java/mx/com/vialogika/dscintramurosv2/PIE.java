@@ -4,10 +4,14 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +28,11 @@ import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.divyanshu.draw.activity.DrawingActivity;
 import com.esafirm.imagepicker.features.ImagePicker;
+import com.esafirm.imagepicker.model.Image;
 
+import org.json.JSONObject;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -32,6 +40,7 @@ import java.util.UUID;
 
 import mx.com.vialogika.dscintramurosv2.Network.NetworkOperations;
 import mx.com.vialogika.dscintramurosv2.Room.SiteIncident;
+import mx.com.vialogika.dscintramurosv2.Utils.FileUtils;
 import mx.com.vialogika.dscintramurosv2.Utils.Semaforo;
 import mx.com.vialogika.dscintramurosv2.Utils.TimeUtils;
 import mx.com.vialogika.dscintramurosv2.Utils.UserKeys;
@@ -55,7 +64,7 @@ public class PIE extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private SiteIncident incident;
+    private SiteIncident incident = new SiteIncident();
 
     private EditText   fecha;
     private EditText   hora;
@@ -72,6 +81,9 @@ public class PIE extends Fragment {
     private Button     takeSignaturesButton;
     private Button     saveAndContinueButton;
     private Spinner    incidentInput;
+
+    private List<Image> evidences = new ArrayList<>();
+    private Bitmap signature;
 
     public static final int REQUEST_CODE_DRAW = 256;
 
@@ -187,7 +199,7 @@ public class PIE extends Fragment {
         public void onClick(View v) {
             switch(v.getId()){
                 case R.id.take_evidence:
-                    ImagePicker.create(getActivity()).start();
+                    ImagePicker.create(PIE.this).start();
                     break;
                 case R.id.sign_capture:
                     Intent intent = new Intent(getActivity(), DrawingActivity.class);
@@ -210,10 +222,88 @@ public class PIE extends Fragment {
         }
     };
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        String code = "1";
+        if (ImagePicker.shouldHandle(requestCode,resultCode,data)){
+            getEvidencesPaths(ImagePicker.getImages(data));
+        }
+        if(data != null && requestCode == REQUEST_CODE_DRAW){
+            byte[] result = data.getByteArrayExtra("bitmap");
+            signature = BitmapFactory.decodeByteArray(result,0,result.length);
+            addSignatureInfo();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void getEvidencesPaths(List<Image> evidences){
+        for (int i = 0; i < evidences.size(); i++) {
+            Image c = evidences.get(i);
+            incident.setEventEvidence(c.getPath());
+        }
+    }
+
+    private void addSignatureInfo(){
+        final AlertDialog dialog = new AlertDialog.Builder(getContext())
+                .setTitle("Info. de huella")
+                .setView(R.layout.signature_info)
+                .create();
+        dialog.show();
+        final EditText sname = dialog.findViewById(R.id.signature_name);
+        final EditText srole = dialog.findViewById(R.id.signature_level);
+        final TextView warn = dialog.findViewById(R.id.dialog_warn);
+        final Button ok = dialog.findViewById(R.id.ok);
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!sname.getText().toString().equals("") && !srole.getText().toString().equals("")){
+                    if (saveSignature(sname.getText().toString(),srole.getText().toString())){
+                        dialog.dismiss();
+                        signature = null;
+                    }
+                }else{
+                    warn.setText(R.string.must_fill);
+                    new CountDownTimer(3000,1000){
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            warn.setText("");
+                        }
+                    };
+                }
+            }
+        });
+        Button cancel = dialog.findViewById(R.id.cancel);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+    private boolean saveSignature(String name, String role){
+        try{
+            File storage = FileUtils.createImageSignature();
+            FileUtils.saveBitmap(signature,storage, Bitmap.CompressFormat.PNG);
+            incident.setEventSignature(storage.getAbsolutePath());
+            incident.setEventSignatureNames(name);
+            incident.setEventSignatureRoles(role);
+            return true;
+        }catch(Exception e){
+            return false;
+        }
+    }
+
     private void getItems(View rootview){
         fecha = rootview.findViewById(R.id.event_time);
         hora = rootview.findViewById(R.id.event_timex);
         hora.setOnClickListener(listener);
+        hora.setShowSoftInputOnFocus(false);
         fecha.setText(TimeUtils.nowToString("yyyy-MM-dd"));
         semaforo = rootview.findViewById(R.id.event_highlight);
         semaforo.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -291,7 +381,26 @@ public class PIE extends Fragment {
 
     private void save(){
         if (validate()){
-            Toast.makeText(getContext(), "All field are validated", Toast.LENGTH_SHORT).show();
+            getValues();
+            NetworkOperations.saveIncidence(incident, new NetworkOperations.SimpleNetworkCallback<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try{
+                        if (response.getBoolean("success")){
+                            Toast.makeText(GlobalAplication.getAppContext(), response.getString("message"), Toast.LENGTH_SHORT).show();
+                            MainActivity activity = (MainActivity) getContext();
+                            activity.loadfragment(PIE.newInstance("",""));
+                        }
+                    }catch(Exception e ){
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onVolleyError(JSONObject response, VolleyError error) {
+
+                }
+            });
         }
     }
 
@@ -309,7 +418,7 @@ public class PIE extends Fragment {
         incident.setEventHow(eventWhatInput.getText().toString());
         incident.setEventWhere(evetDescriptionInput.getText().toString());
         incident.setEventUser(completeNameReports.getText().toString());
-        incident.setEventUserSite(String.valueOf(preferences.getInt(UserKeys.SP_SITE,0)));
+        incident.setEventUserSite(String.valueOf(preferences.getInt(UserKeys.SP_SITE_ID,0)));
         incident.setEventEditStatus(true);
         incident.setEventType("Incidencia intramuros");
         incident.setEventUUID(UUID.randomUUID().toString());

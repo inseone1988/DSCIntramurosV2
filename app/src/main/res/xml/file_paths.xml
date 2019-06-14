@@ -3,4 +3,7 @@
     <external-path
         name="guard_profile_images"
         path="Android/data/mx.com.vialogika.dscintramurosv2/files/Pictures" />
+    <external-path
+        name="incident_signatures"
+        path="Android/data/mx.com.vialogika.dscintramurosv2/files/Signatures" />
 </paths>

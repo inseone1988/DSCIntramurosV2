@@ -2,16 +2,14 @@ package mx.com.vialogika.dscintramurosv2.Network;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.Nullable;
+
 import android.util.Log;
 import android.widget.ImageView;
-import android.widget.ListPopupWindow;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -46,7 +44,7 @@ import mx.com.vialogika.dscintramurosv2.Room.Guard;
 import mx.com.vialogika.dscintramurosv2.Room.Incidencia;
 import mx.com.vialogika.dscintramurosv2.Room.Person;
 import mx.com.vialogika.dscintramurosv2.Room.Plantilla;
-import mx.com.vialogika.dscintramurosv2.Room.SiteIncidence;
+import mx.com.vialogika.dscintramurosv2.Room.SiteIncident;
 import mx.com.vialogika.dscintramurosv2.Utils.FileUtils;
 import mx.com.vialogika.dscintramurosv2.Utils.UserKeys;
 import mx.com.vialogika.dscintramurosv2.Vetado;
@@ -507,6 +505,64 @@ public class NetworkOperations {
         }catch(JSONException e ){
             e.printStackTrace();
         }
+        }
+
+        public static void saveIncidence(SiteIncident incident,final SimpleNetworkCallback<JSONObject> cb){
+            try{
+                Context context = GlobalAplication.getAppContext();
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+                MultipartUploadRequest request = new MultipartUploadRequest(context,SERVER_URL_PREFIX + "/requesthandler.php")
+                       .addHeader("bearer",preferences.getString(UserKeys.SP_API_KEY,""))
+                        .addParameter("incident",incident.toJSONObject().toString())
+                        .addParameter("function","saveIncident")
+                        .setMaxRetries(3)
+                        .setNotificationConfig(new UploadNotificationConfig())
+                        .setDelegate(new UploadStatusDelegate() {
+                            @Override
+                            public void onProgress(Context context, UploadInfo uploadInfo) {
+
+                            }
+
+                            @Override
+                            public void onError(Context context, UploadInfo uploadInfo, ServerResponse serverResponse, Exception exception) {
+                                Toast.makeText(context, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onCompleted(Context context, UploadInfo uploadInfo, ServerResponse serverResponse) {
+                                try{
+                                    JSONObject response = new JSONObject(serverResponse.getBodyAsString());
+                                    if (response.getBoolean("success")){
+                                        cb.onResponse(response);
+                                    }
+                                }catch(Exception e){
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(Context context, UploadInfo uploadInfo) {
+                                Toast.makeText(context, "La subida de la incidencia ha sido cancelada", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                String[] evidencePaths = incident.getEventEvidence().split(",");
+                String[] signaturePaths = incident.getEventSignature().split(",");
+                for (int i = 0; i < evidencePaths.length; i++) {
+                    String c = evidencePaths[i];
+                    if (!c.equals("")){
+                        request.addFileToUpload(c,"DSCEvidence_" + (System.currentTimeMillis()));
+                    }
+                }
+                for (int i = 0; i < signaturePaths.length; i++) {
+                    String s = signaturePaths[i];
+                    if (!s.equals("")){
+                        request.addFileToUpload(s,"DSCSignature_"+ (System.currentTimeMillis()));
+                    }
+                }
+                request.startUpload();
+            }catch(Exception e){
+
+            }
         }
 
 

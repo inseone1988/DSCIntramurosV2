@@ -3,15 +3,16 @@ package mx.com.vialogika.dscintramurosv2;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioGroup;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyError;
 
@@ -41,10 +42,10 @@ public class VetadoFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private RecyclerView mrv;
-    private VetadoAdapter adapter;
+    private RecyclerView               mrv;
+    private VetadoAdapter              adapter;
     private RecyclerView.LayoutManager layoutManager;
-    private List<Vetado> vetados = new ArrayList<>();
+    private List<Vetado>               vetados = new ArrayList<>();
 
     private ImageButton goSearch;
     private EditText searchStringInput;

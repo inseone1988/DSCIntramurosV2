@@ -1,9 +1,8 @@
 package mx.com.vialogika.dscintramurosv2.Network;
 
-import android.arch.persistence.room.util.StringUtil;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;

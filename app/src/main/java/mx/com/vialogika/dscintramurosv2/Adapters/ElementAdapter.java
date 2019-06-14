@@ -3,24 +3,20 @@ package mx.com.vialogika.dscintramurosv2.Adapters;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Locale;
 
-import mx.com.vialogika.dscintramurosv2.Dialogs.NewGuardDialog;
 import mx.com.vialogika.dscintramurosv2.ElementAdapterOnClickListener;
-import mx.com.vialogika.dscintramurosv2.ElementsFragment;
 import mx.com.vialogika.dscintramurosv2.R;
 import mx.com.vialogika.dscintramurosv2.Room.Guard;
 
@@ -38,9 +34,9 @@ public class ElementAdapter extends RecyclerView.Adapter<ElementAdapter.ElementV
     }
 
     public static class ElementViewHolder extends RecyclerView.ViewHolder{
-        CardView elementcardView;
+        CardView  elementcardView;
         ImageView profilePicholder;
-        TextView elementName, elmentPosition, elementCreated,elementStatus;
+        TextView  elementName, elmentPosition, elementCreated,elementStatus;
         public ElementViewHolder(@NonNull View itemView) {
             super(itemView);
             elementcardView = itemView.findViewById(R.id.element_card_view);

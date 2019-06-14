@@ -4,24 +4,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import java.lang.reflect.Array;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -50,11 +48,11 @@ public class PlantillaView extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private ProgressBar progressBar;
-    private RecyclerView rv;
+    private ProgressBar                progressBar;
+    private RecyclerView               rv;
     private RecyclerView.LayoutManager mLayoutManager;
-    private ReportedPlantillaAdapter adapter;
-    private FrameLayout noDataView;
+    private ReportedPlantillaAdapter   adapter;
+    private FrameLayout                noDataView;
     FloatingActionButton mFab;
 
     private List<String> groups = new ArrayList<>();
