@@ -46,6 +46,10 @@
     <color name="color_background">#ffffff</color>
     <color name="color_surface">#ffffff</color>
     <color name="color_error">#b00020</color>
+    <color name="background_light_gray">#EBE9E9</color>
+    <color name="background_success">#00D606</color>
+    <color name="background_warning">@color/colorPrimary</color>
+    <color name="background_danger">@color/color_secondary</color>
 
     <!--"On" colors define how text, icons and strokes are colored in relation to the surface-->
     <!--on which they appear.-->

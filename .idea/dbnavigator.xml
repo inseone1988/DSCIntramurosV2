@@ -23,11 +23,7 @@
     <autoscroll-to-editor value="false" />
     <autoscroll-from-editor value="true" />
     <show-object-properties value="true" />
-    <loaded-nodes>
-      <connection connection-id="1e098b10-fdb7-4c91-b114-012b07e640bf">
-        <schema name="main" object-types="dataset trigger, table, constraint, index, column, view" />
-      </connection>
-    </loaded-nodes>
+    <loaded-nodes />
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="1e098b10-fdb7-4c91-b114-012b07e640bf">
@@ -85,7 +81,8 @@
           <files>
             <file path="C:\Users\Javier Ramirez\Documents\AndroidStudio\DeviceExplorer\motorola-moto_e5-192.168.2.6_5555\data\data\mx.com.vialogika.dscintramurosv2\databases\Database" schema="main" />
           </files>
-          <type value="NONE" />
+          <os-authentication value="false" />
+          <empty-authentication value="false" />
           <user value="" />
           <deprecated-pwd value="" />
         </database>
@@ -123,7 +120,7 @@
           <max-connection-pool-size value="7" />
           <alternative-statement-delimiter value="" />
         </details>
-        <object-filters hide-empty-schemas="false" hide-pseudo-columns="false">
+        <object-filters hide-empty-schemas="false">
           <object-type-filter use-master-settings="true">
             <object-type name="SCHEMA" enabled="true" />
             <object-type name="USER" enabled="true" />

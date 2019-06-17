@@ -32,6 +32,7 @@ public class DialogGetTurnoDetails extends DialogFragment {
         View rootview = inflater.inflate(R.layout.grupo_details_dialog,null);
         getItems(rootview);
         builder.setView(rootview);
+        builder.setTitle("Grupo y turno");
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

@@ -9,7 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -50,6 +54,9 @@ public class VetadoFragment extends Fragment {
     private ImageButton goSearch;
     private EditText searchStringInput;
     private RadioGroup searchType;
+    private LinearLayout progressView;
+    private ProgressBar progressBar;
+    private TextView statusText;
 
     private SearchType searchStringType = SearchType.SEARCH_TYPE_PERSON;
 
@@ -97,6 +104,9 @@ public class VetadoFragment extends Fragment {
 
     private void getItems(View rootView){
         mrv = rootView.findViewById(R.id.vetado_rv);
+        progressView = rootView.findViewById(R.id.wainting_view);
+        statusText = rootView.findViewById(R.id.sttus_description);
+        progressBar = rootView.findViewById(R.id.progressBar2);
         initRv();
         searchType = rootView.findViewById(R.id.search_type);
         searchType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -122,6 +132,8 @@ public class VetadoFragment extends Fragment {
                 }
             }
         });
+        progressBar.setVisibility(View.GONE);
+        updateStatus("Ingrese termino y tipo de busqueda");
     }
 
     private boolean validate(){
@@ -137,20 +149,44 @@ public class VetadoFragment extends Fragment {
         mrv.setLayoutManager(layoutManager);
         mrv.setAdapter(adapter);
     }
+    private void updateStatus(String message){
+        statusText.setText(message);
+    }
+
+    private void hideProgressView(){
+        progressView.setVisibility(View.GONE);
+        mrv.setVisibility(View.VISIBLE);
+    }
+
+    private void showProgressView(){
+        progressView.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+        mrv.setVisibility(View.GONE);
+    }
 
     private void searchVetado(){
+        showProgressView();
+        updateStatus("Buscando...");
         vetados.clear();
         NetworkOperations  ops = NetworkOperations.getInstance();
         ops.vetadoSearch(searchStringInput.getText().toString(), searchStringType.toString(), new NetworkOperations.SimpleNetworkCallback<List<Vetado>>() {
             @Override
             public void onResponse(List<Vetado> response) {
+                progressBar.setVisibility(View.GONE);
+                updateStatus("Procesando respuesta");
                 vetados.addAll(response);
                 adapter.notifyDataSetChanged();
+                if(vetados.size() > 0){
+                    hideProgressView();
+                }else{
+                    updateStatus("No hay resultados");
+                    Toast.makeText(getContext(), "No hay Resultados", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
             public void onVolleyError(List<Vetado> response, VolleyError error) {
-
+                updateStatus(error.getMessage());
             }
         });
         searchStringInput.setText("");

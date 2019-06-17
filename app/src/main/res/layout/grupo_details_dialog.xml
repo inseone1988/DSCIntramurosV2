@@ -9,6 +9,9 @@
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/background_light_gray"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
         android:text="@string/grupo"
         android:textSize="18sp" />
 
@@ -16,12 +19,16 @@
         android:id="@+id/plantilla_grupo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:entries="@array/grupos" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/background_light_gray"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
         android:text="@string/turno"
         android:textSize="18sp" />
 
@@ -29,5 +36,6 @@
         android:id="@+id/plantilla_turno"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:entries="@array/turnos" />
 </LinearLayout>

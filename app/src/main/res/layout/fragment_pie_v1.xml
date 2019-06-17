@@ -46,14 +46,18 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp">
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/pie_prompt_descrip" />
+                    android:background="@color/background_light_gray"
+                    android:elevation="3dp"
+                    android:padding="10dp"
+                    android:text="@string/pie_prompt_descrip"
+                    android:translationZ="2dp" />
             </LinearLayout>
 
             <Spinner
@@ -117,6 +121,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.25"
+                        android:background="@color/background_light_gray"
+                        android:textColor="@color/background_light_gray"
                         android:textStyle="bold"
                         tools:text="@string/gray" />
 
@@ -125,7 +131,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.25"
+                        android:background="@color/background_success"
                         android:text="@string/green"
+                        android:textColor="@color/background_light_gray"
                         android:textStyle="bold" />
 
                     <RadioButton
@@ -133,7 +141,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.25"
+                        android:background="@color/background_warning"
                         android:text="@string/yellow"
+                        android:textColor="@color/background_light_gray"
                         android:textStyle="bold" />
 
                     <RadioButton
@@ -141,6 +151,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.25"
+                        android:background="@color/background_danger"
+                        android:textColor="@color/background_light_gray"
                         android:textStyle="bold"
                         tools:text="@string/red" />
                 </RadioGroup>
@@ -170,6 +182,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="@color/background_light_gray"
                         android:gravity="center"
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
@@ -242,7 +255,7 @@
 
                     <Button
                         android:id="@+id/take_evidence"
-                        style="?android:attr/buttonBarStyle"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
@@ -250,7 +263,7 @@
 
                     <Button
                         android:id="@+id/sign_capture"
-                        style="?android:attr/buttonBarStyle"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
@@ -261,7 +274,12 @@
                     android:id="@+id/save_and_send"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/save_and_continue" />
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@color/background_light_gray"
+                    android:text="@string/save_and_continue"
+                    android:textColor="@color/color_secondary" />
 
                 <TextView
                     android:layout_width="match_parent"

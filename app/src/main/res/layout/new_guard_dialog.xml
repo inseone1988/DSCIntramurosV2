@@ -118,7 +118,7 @@
 
     <Button
         android:id="@+id/sav_element"
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        style="@style/Widget.MaterialComponents.Button.TextButton.Snackbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/save_guard_profile" />
