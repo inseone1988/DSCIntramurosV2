@@ -1,5 +1,6 @@
 package mx.com.vialogika.dscintramurosv2;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -127,6 +129,7 @@ public class VetadoFragment extends Fragment {
         goSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hideSoftKeyboard();
                 if (validate()){
                     searchVetado();
                 }
@@ -134,6 +137,14 @@ public class VetadoFragment extends Fragment {
         });
         progressBar.setVisibility(View.GONE);
         updateStatus("Ingrese termino y tipo de busqueda");
+    }
+
+    private void hideSoftKeyboard(){
+        View focused = ((Activity)getContext()).getCurrentFocus();
+        if (focused != null){
+            InputMethodManager inputMethodManager = (InputMethodManager)((Activity)getContext()).getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(focused.getWindowToken(),0);
+        }
     }
 
     private boolean validate(){

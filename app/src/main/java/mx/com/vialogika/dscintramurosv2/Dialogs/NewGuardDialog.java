@@ -37,6 +37,7 @@ public class NewGuardDialog extends DialogFragment {
     private ImageView profileImageHolder;
     private TextView nameHolder,fnameHolder,lnameHolder;
     private Spinner genre,group,position;
+    private Spinner groupsSpinner;
 
     private Guard guard;
     private Person person ;
@@ -76,6 +77,7 @@ public class NewGuardDialog extends DialogFragment {
         group = rootview.findViewById(R.id.group);
         position = rootview.findViewById(R.id.position);
         saveElement.setOnClickListener(listener);
+        groupsSpinner = rootview.findViewById(R.id.group_spinner);
     }
 
     private View.OnClickListener listener = new View.OnClickListener() {
@@ -121,6 +123,8 @@ public class NewGuardDialog extends DialogFragment {
         guard.setGuardRange(person.getPersonPosition());
         guard.setPaersonData(person);
         guard.setGuardStatus(1);
+        guard.setGuardTurno(group.getSelectedItem().toString());
+        guard.setGuardGroup(groupsSpinner.getSelectedItem().toString());
     }
 
     private boolean validValues(){
@@ -151,8 +155,9 @@ public class NewGuardDialog extends DialogFragment {
 
                     }
                 });
+            }else{
+                callback.onGuardSave(guard);
             }
-            callback.onGuardSave(guard);
         }
     }
 

@@ -278,12 +278,13 @@ public class DatabaseOperations {
             public void run() {
                 List<Guard> guards = db.guardDao().getAllGuards();
                 for (int i = 0; i < guards.size(); i++) {
-                    Person person = db.personDao().getPersonByid(guards.get(i).getGuardId());
+                    Person person = db.personDao().getPersonByid(guards.get(i).getGuardPersonId());
                     if (person != null){
                         guards.get(i).setPaersonData(person);
                     }else {
                         //Thank you so much Intellij for telling me that
                         guards.remove(i);
+                        //DELETE inexistent person we dont want duplicate
                         i = i-1;
                     }
                 }

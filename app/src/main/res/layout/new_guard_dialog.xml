@@ -99,6 +99,23 @@
         android:entries="@array/turnos" />
 
     <TextView
+        android:id="@+id/turn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:text="@string/grupo"
+        android:textStyle="bold" />
+
+    <Spinner
+        android:id="@+id/group_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:entries="@array/grupos" />
+
+    <TextView
         android:id="@+id/textView5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

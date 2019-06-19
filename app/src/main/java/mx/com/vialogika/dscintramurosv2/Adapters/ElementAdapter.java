@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -59,7 +60,7 @@ public class ElementAdapter extends RecyclerView.Adapter<ElementAdapter.ElementV
     @Override
     public void onBindViewHolder(@NonNull ElementViewHolder elementViewHolder, int i) {
         final int position = i;
-        Guard current = dataset.get(i);
+        final Guard current = dataset.get(i);
         if (photoExists(current.getGuardPhotoPath()) && current.hasLocalProfilePhoto()){
             elementViewHolder.profilePicholder.setImageBitmap(BitmapFactory.decodeFile(current.getGuardPhotoPath()));
         }else{
@@ -74,7 +75,11 @@ public class ElementAdapter extends RecyclerView.Adapter<ElementAdapter.ElementV
             @Override
             public void onClick(View v) {
                 super.onClick(v);
-                cb.OnElementSelect(position);
+                if(current.isActive()){
+                    cb.OnElementSelect(position);
+                }else{
+                    Toast.makeText(mContext, "Elemento no editable", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

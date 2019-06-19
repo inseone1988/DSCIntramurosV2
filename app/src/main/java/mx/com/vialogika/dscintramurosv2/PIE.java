@@ -323,7 +323,7 @@ public class PIE extends Fragment {
                         incidenceType = Semaforo.ROJO;
                         break;
                 }
-                test.setText(incidenceType.toSTring());
+                //test.setText(incidenceType.toSTring());
             }
         });
         incidentInput = rootview.findViewById(R.id.event_type);

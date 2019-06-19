@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 import mx.com.vialogika.dscintramurosv2.GlobalAplication;
+import mx.com.vialogika.dscintramurosv2.MainActivity;
 import mx.com.vialogika.dscintramurosv2.Room.Apostamiento;
 import mx.com.vialogika.dscintramurosv2.Room.DatabaseOperations;
 import mx.com.vialogika.dscintramurosv2.Room.Guard;
@@ -55,9 +56,9 @@ public class NetworkOperations {
     public static final String MODE_SYNC                = "mode_sync";
     public static final String MODE_SEND                = "mode_send";
     public static final int    SEND_PLANTILLA_TO_SERVER = 154879;
-    //public static final String SERVER_URL_PREFIX        = "https://www.vialogika.com.mx/dscic/";
+    public static final String SERVER_URL_PREFIX        = "https://www.vialogika.com.mx/dscic/";
     //public static final String SERVER_URL_PREFIX        = "http://192.168.2.2/dscic/";
-    public static final String SERVER_URL_PREFIX        = "http://192.168.0.3/dscic/";
+    //public static final String SERVER_URL_PREFIX        = "http://192.168.0.3/dscic/";
     public static final String DEFAULT_HANDLER          = "raw.php";
 
     private static volatile NetworkOperations instance;
@@ -300,39 +301,19 @@ public class NetworkOperations {
         });
     }
 
-    public void saveGuard(Guard guard) {
+    public void saveGuard(Guard guard,UploadStatusDelegate delegate) {
         try {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GlobalAplication.getAppContext());
             String apikey = preferences.getString(UserKeys.SP_API_KEY,"");
-            String uploadId = new MultipartUploadRequest(GlobalAplication.getAppContext(), guardProfilePhotoHandler())
+            new MultipartUploadRequest(GlobalAplication.getAppContext(), guardProfilePhotoHandler())
                     .addHeader("bearer",apikey)
                     .addFileToUpload(guard.getGuardPhotoPath(), "profile_photo")
                     .addParameter("function","saveProfilePhoto")
                     .addParameter("guard",guard.toJSONObject().toString())
                     .addParameter("person",guard.getPaersonData().toJSONObject().toString())
                     .setNotificationConfig(new UploadNotificationConfig())
-                    .setDelegate(new UploadStatusDelegate() {
-                        @Override
-                        public void onProgress(Context context, UploadInfo uploadInfo) {
-
-                        }
-
-                        @Override
-                        public void onError(Context context, UploadInfo uploadInfo, ServerResponse serverResponse, Exception exception) {
-
-                        }
-
-                        @Override
-                        public void onCompleted(Context context, UploadInfo uploadInfo, ServerResponse serverResponse) {
-                            System.out.println(new String(serverResponse.getBody()));
-                        }
-
-                        @Override
-                        public void onCancelled(Context context, UploadInfo uploadInfo) {
-
-                        }
-                    })
                     .setMaxRetries(3)
+                    .setDelegate(delegate)
                     .startUpload();
         } catch (Exception e) {
 
@@ -390,7 +371,6 @@ public class NetworkOperations {
                             cb.onResponse(vetados);
                         }else{
                             cb.onResponse(new ArrayList<Vetado>());
-                            Toast.makeText(GlobalAplication.getAppContext(), "No se han encontrado resultados", Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

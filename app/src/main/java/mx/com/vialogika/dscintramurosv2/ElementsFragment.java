@@ -1,7 +1,10 @@
 package mx.com.vialogika.dscintramurosv2;
 
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,6 +12,11 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.core.content.FileProvider;
 import android.text.Editable;
@@ -29,6 +37,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
+
+import net.gotev.uploadservice.ServerResponse;
+import net.gotev.uploadservice.UploadInfo;
+import net.gotev.uploadservice.UploadStatusDelegate;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,6 +59,7 @@ import mx.com.vialogika.dscintramurosv2.Dialogs.NewGuardDialog;
 import mx.com.vialogika.dscintramurosv2.Network.NetworkOperations;
 import mx.com.vialogika.dscintramurosv2.Room.DatabaseOperations;
 import mx.com.vialogika.dscintramurosv2.Room.Guard;
+import mx.com.vialogika.dscintramurosv2.Room.Person;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -84,6 +100,44 @@ public class ElementsFragment extends Fragment {
 
     private Spinner              sp;
     private FloatingActionButton addElementDFab;
+
+    private UploadStatusDelegate delegate = new UploadStatusDelegate() {
+        @Override
+        public void onProgress(Context context, UploadInfo uploadInfo) {
+            System.out.println(uploadInfo.getProgressPercent());
+        }
+
+        @Override
+        public void onError(Context context, UploadInfo uploadInfo, ServerResponse
+        serverResponse, Exception exception) {
+
+        }
+
+        @Override
+        public void onCompleted(Context context, UploadInfo uploadInfo, ServerResponse serverResponse) {
+            try{
+                Gson gson = new Gson();
+                JSONObject response = new JSONObject(serverResponse.getBodyAsString());
+                if (response.getBoolean("success")){
+                    DatabaseOperations op     = DatabaseOperations.getInstance();
+                    Guard              guard  = new Guard(response.getJSONObject("guard"));
+                    Person             person = new Person(response.getJSONObject("person"));
+                    guard.setPaersonData(person);
+                    op.saveNewGuard(guard);
+                    System.out.println(new String(serverResponse.getBody()));
+                    Toast.makeText(GlobalAplication.getAppContext(), "Guardia guardado", Toast.LENGTH_SHORT).show();
+                }
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+
+        }
+
+        @Override
+        public void onCancelled(Context context, UploadInfo uploadInfo) {
+
+        }
+    };
 
 
     public ElementsFragment() {
@@ -182,7 +236,7 @@ public class ElementsFragment extends Fragment {
             switch (v.getId()) {
                 case R.id.add_element_fab:
                     takePicture();
-                    Toast.makeText(getContext(), "Hello new guard", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Capture la fotografia del guardia", Toast.LENGTH_SHORT).show();
                     break;
                 default:
                     break;
@@ -191,20 +245,44 @@ public class ElementsFragment extends Fragment {
     };
 
     private void takePicture(){
-        Intent takepictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takepictureIntent.resolveActivity(getActivity().getPackageManager()) != null){
-            File photofile = null;
-            try{
-                photofile = createImageFIle();
-            }catch(IOException e){
-                e.printStackTrace();
+        int permission = ContextCompat.checkSelfPermission(getContext(),Manifest.permission.CAMERA);
+        if(permission == PackageManager.PERMISSION_GRANTED){
+            Intent takepictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takepictureIntent.resolveActivity(getActivity().getPackageManager()) != null){
+                File photofile = null;
+                try{
+                    photofile = createImageFIle();
+                }catch(IOException e){
+                    e.printStackTrace();
+                }
+                if (photofile != null){
+                    Uri PhotoUri = FileProvider.getUriForFile(getContext(),getContext().getApplicationContext().getPackageName() + ".fileprovider",photofile);
+                    takepictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,PhotoUri);
+                    startActivityForResult(takepictureIntent,REQUEST_IMAGE_CAPTURE);
+                }
             }
-            if (photofile != null){
-                Uri PhotoUri = FileProvider.getUriForFile(getContext(),getContext().getApplicationContext().getPackageName() + ".fileprovider",photofile);
-                takepictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,PhotoUri);
-                startActivityForResult(takepictureIntent,REQUEST_IMAGE_CAPTURE);
-            }
+        }else{
+            ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.CAMERA},Setup.REQUEST_CAMERA_PERMISSION);
         }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch(requestCode){
+            case Setup.REQUEST_CAMERA_PERMISSION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    takePicture();
+                }else {
+                    new AlertDialog.Builder(getContext())
+                            .setTitle("Permisos requeridos")
+                            .setMessage("No se puede dar de alta sin el permiso de usar la camara, intente nuevamente otorgando los permisos solicitados")
+                            .setPositiveButton(android.R.string.ok,null)
+                            .show();
+                }
+                break;
+        }
+
     }
 
     private File createImageFIle()throws IOException{
@@ -269,7 +347,7 @@ public class ElementsFragment extends Fragment {
     private void saveNewGuard(Guard guard){
         filter.add(guard);
         adapter.notifyDataSetChanged();
-        NetworkOperations.getInstance().saveGuard(guard);
+        NetworkOperations.getInstance().saveGuard(guard,delegate);
         //dbo.saveNewGuard(guard);
     }
 

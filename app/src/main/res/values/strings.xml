@@ -184,7 +184,7 @@
     <string name="event_where">¿Cuando paso?</string>
     <string name="brief_event_description">Breve descripcion de los hechos</string>
     <string name="person_fullname">Nombre completo de quien reporta</string>
-    <string name="select_evidence">Seleccionar evidencia</string>
+    <string name="select_evidence">Evidencia</string>
     <string name="signing">Firmas</string>
     <string name="save_and_continue">Guardar y enviar</string>
     <string name="sign_name">Nombre completo</string>

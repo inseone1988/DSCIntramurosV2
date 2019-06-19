@@ -40,7 +40,7 @@ public class Guard {
             this.guardPersonId = guard.getInt("guard_person_id");
             this.guardSite = guard.getString("guard_site");
             this.guardRange = guard.getString("guard_range");
-            this.guardHash = guard.getString("guard_hash");
+            //this.guardHash = guard.getString("guard_hash");
             this.guardPhotoPath = guard.getString("guard_photo_path");
             this.guardGroup = guard.getString("guard_group");
             this.guardTurno = guard.getString("guard_turno");

@@ -52,6 +52,8 @@ public class EditAptsDialog extends DialogFragment {
     private SpinnerAdapter incidenceSpinnerAdapter;
     private SpinnerAdapter   incidenceTypeSpinnerAdapter;
 
+    private Guard current;
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -63,12 +65,7 @@ public class EditAptsDialog extends DialogFragment {
         setupAdapters();
         setListeners();
         dialogBuilder.setView(rootView)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
+                .setPositiveButton(android.R.string.ok, null)
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -84,9 +81,11 @@ public class EditAptsDialog extends DialogFragment {
                     @Override
                     public void onClick(View v) {
                         if (validateAsignment()){
+                            current.setAsigned(true);
                             callback.onAddApostamienti(gId,apId,incidencia);
                             clearFields();
                             displayWarnMessage("Guardado");
+                            current = null;
                         }
                     }
                 });
@@ -190,11 +189,10 @@ public class EditAptsDialog extends DialogFragment {
 
     private int getGuardIdByName(String name){
         for (int i = 0; i < guards.size(); i++) {
-            Guard g = guards.get(i);
-            if (g.getPaersonData().getPersonFullName().equals(name)){
-                if(!g.isAsigned()){
-                    g.setAsigned(true);
-                    return g.getGuardId();
+            current = guards.get(i);
+            if (current.getPaersonData().getPersonFullName().equals(name)){
+                if(!current.isAsigned()){
+                    return current.getGuardId();
                 }else{
                     displayWarnMessage("Elemento ya asignado");
                 }

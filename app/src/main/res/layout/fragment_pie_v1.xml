@@ -114,46 +114,51 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:checkedButton="@+id/pie_sem_null"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:textAlignment="center">
 
                     <RadioButton
                         android:id="@+id/pie_sem_null"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.25"
                         android:background="@color/background_light_gray"
-                        android:textColor="@color/background_light_gray"
-                        android:textStyle="bold"
+                        android:textColor="@color/color_black"
+                        android:textStyle="normal"
+                        app:useMaterialThemeColors="true"
                         tools:text="@string/gray" />
 
                     <RadioButton
                         android:id="@+id/pie_sem_green"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.25"
                         android:background="@color/background_success"
                         android:text="@string/green"
-                        android:textColor="@color/background_light_gray"
-                        android:textStyle="bold" />
+                        android:textColor="@color/color_black"
+                        android:textStyle="bold"
+                        app:useMaterialThemeColors="true" />
 
                     <RadioButton
                         android:id="@+id/pie_sem_yellow"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.25"
                         android:background="@color/background_warning"
                         android:text="@string/yellow"
-                        android:textColor="@color/background_light_gray"
-                        android:textStyle="bold" />
+                        android:textColor="@color/color_black"
+                        android:textStyle="bold"
+                        app:useMaterialThemeColors="true" />
 
                     <RadioButton
                         android:id="@+id/pie_sem_red"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.25"
                         android:background="@color/background_danger"
-                        android:textColor="@color/background_light_gray"
+                        android:textColor="@color/color_black"
                         android:textStyle="bold"
+                        app:useMaterialThemeColors="true"
                         tools:text="@string/red" />
                 </RadioGroup>
 
@@ -256,7 +261,7 @@
                     <Button
                         android:id="@+id/take_evidence"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
                         android:text="@string/select_evidence" />
@@ -264,7 +269,7 @@
                     <Button
                         android:id="@+id/sign_capture"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
                         android:text="@string/signing" />

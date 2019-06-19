@@ -29,6 +29,7 @@ import mx.com.vialogika.dscintramurosv2.Utils.UserKeys;
 public class Setup extends AppCompatActivity {
 
     private static final int REQUEST_PERMISSION_CODE = 150;
+    public static final int REQUEST_CAMERA_PERMISSION = 220;
     private boolean hasAllPermissions = false;
 
     private ProgressBar pb;
