@@ -116,12 +116,14 @@ public class ElementsFragment extends Fragment {
         @Override
         public void onCompleted(Context context, UploadInfo uploadInfo, ServerResponse serverResponse) {
             try{
-                Gson gson = new Gson();
                 JSONObject response = new JSONObject(serverResponse.getBodyAsString());
                 if (response.getBoolean("success")){
                     DatabaseOperations op     = DatabaseOperations.getInstance();
                     Guard              guard  = new Guard(response.getJSONObject("guard"));
                     Person             person = new Person(response.getJSONObject("person"));
+                    //This must ocurr only when new guard is saved
+                    guard.setGuardPhotoPath(currentPhotoPath);
+                    person.setPersonProfilePhotoPath(currentPhotoPath);
                     guard.setPaersonData(person);
                     op.saveNewGuard(guard);
                     System.out.println(new String(serverResponse.getBody()));
