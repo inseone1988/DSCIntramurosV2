@@ -39,6 +39,24 @@ public class FileUtils {
         return image;
     }
 
+    public static File createProfileImageFile(){
+        File image = null;
+        try{
+            Context context = GlobalAplication.getAppContext();
+            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(new Date());
+            String imageFileName = "DSCProfile_" + timestamp + "_";
+            File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            if (!storageDir.exists()){
+                storageDir.mkdir();
+            }
+            image = File.createTempFile(imageFileName,".jpg",storageDir);
+            return image;
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static boolean saveBitmap(Bitmap bitmap,File output, Bitmap.CompressFormat format){
         try(FileOutputStream out = new FileOutputStream(output)){
             bitmap.compress(format,100,out);

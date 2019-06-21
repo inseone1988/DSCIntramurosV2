@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -247,26 +249,8 @@ public class ElementsFragment extends Fragment {
     };
 
     private void takePicture(){
-        int permission = ContextCompat.checkSelfPermission(getContext(),Manifest.permission.CAMERA);
-        if(permission == PackageManager.PERMISSION_GRANTED){
-            Intent takepictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (takepictureIntent.resolveActivity(getActivity().getPackageManager()) != null){
-                File photofile = null;
-                try{
-                    photofile = createImageFIle();
-                }catch(IOException e){
-                    e.printStackTrace();
-                }
-                if (photofile != null){
-                    Uri PhotoUri = FileProvider.getUriForFile(getContext(),getContext().getApplicationContext().getPackageName() + ".fileprovider",photofile);
-                    takepictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,PhotoUri);
-                    startActivityForResult(takepictureIntent,REQUEST_IMAGE_CAPTURE);
-                }
-            }
-        }else{
-            ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.CAMERA},Setup.REQUEST_CAMERA_PERMISSION);
-        }
-
+        Intent intent = new Intent(getContext(),GuardPhotoTake.class);
+        startActivityForResult(intent,REQUEST_IMAGE_CAPTURE);
     }
 
     @Override
@@ -303,8 +287,17 @@ public class ElementsFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
             Bundle extras = data.getExtras();
-            Bitmap imagebitmap = (Bitmap) extras.get("data");
-            showNewElementDialog(imagebitmap);
+            String path = extras.getString("path");
+            if (path != null && !path.equals("")){
+                currentPhotoPath = path;
+                File saved = new File(path);
+                if (saved.exists()){
+                    Bitmap imagebitmap = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(path),64,64);
+                    showNewElementDialog(imagebitmap);
+                }
+            }else{
+                Toast.makeText(getContext(), "Ocurrio un error al crear la imagen", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
