@@ -118,6 +118,7 @@ public class NewGuardDialog extends DialogFragment {
         person.setPersonPosition(position.getSelectedItem().toString());
         person.setPersonSiteId(preferences.getInt(UserKeys.SP_SITE_ID,0));
         person.setPersonProviderid(preferences.getInt(UserKeys.SP_PROVIDER_ID,0));
+        person.setPersonType("Intramuros");
         guard.setGuardProviderId(preferences.getInt(UserKeys.SP_PROVIDER_ID,0));
         guard.setGuardSite(String.valueOf(preferences.getInt(UserKeys.SP_SITE_ID,0)));
         guard.setGuardRange(person.getPersonPosition());
@@ -125,6 +126,7 @@ public class NewGuardDialog extends DialogFragment {
         guard.setGuardStatus(1);
         guard.setGuardTurno(group.getSelectedItem().toString());
         guard.setGuardGroup(groupsSpinner.getSelectedItem().toString());
+        guard.setGuardBajaTimestamp("0000-00-00 00:00");
     }
 
     private boolean validValues(){

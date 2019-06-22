@@ -46,6 +46,9 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="5c9759bcfd5d7ea3b36096544a94f1dfac5dc295" />
     </application>
 
 </manifest>

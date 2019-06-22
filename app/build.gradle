@@ -1,5 +1,33 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
 apply plugin: 'com.android.application'
 
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
+apply plugin : 'eu.davidea.grabver'
+apply plugin: 'io.fabric'
+versioning {
+    // Required (number)
+    major 1
+    minor 0
+    // Optional, force custom patch (number)
+    //patch 7
+    // Optional (any string)
+    preRelease "pre-alpha"
+    // Optional, custom task name to trigger the increase of the version
+    //incrementOn "<task-name>"
+    // Optional, custom task name for which you want to save the versioning file
+    //saveOn "<task-name>"
+}
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -7,9 +35,14 @@ android {
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
-        versionName "1.0"
+        versionName versioning.fullName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+    }
+    applicationVariants.all{variant->
+        variant.outputs.each{output->
+            output.outputFileName = "${versioning.fullName}.apk"
+        }
     }
     buildTypes {
         release {
@@ -39,4 +72,8 @@ dependencies {
     implementation 'com.github.divyanshub024:AndroidDraw:v0.1'
     implementation 'com.google.android.material:material:1.1.0-alpha07'
     implementation 'com.otaliastudios:cameraview:2.0.0-beta05'
+    implementation 'com.google.firebase:firebase-core:16.0.9'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
 }
+
+apply plugin: 'com.google.gms.google-services'

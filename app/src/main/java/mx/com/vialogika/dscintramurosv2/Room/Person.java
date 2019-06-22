@@ -40,9 +40,9 @@ public class Person {
             this.personName = person.getString("person_name");
             this.personFname = person.getString("person_fname");
             this.personLname = person.getString("person_lname");
-            this.personIdcardNumber = person.getString("person_idcard_number");
-            this.personLicenseType = person.getString("person_license_type");
-            this.personLicenseExp = person.getString("person_license_exp");
+            //this.personIdcardNumber = person.getString("person_idcard_number");
+            //this.personLicenseType = person.getString("person_license_type");
+            //this.personLicenseExp = person.getString("person_license_exp");
             //this.personCertType = person.getString("person_cert_type");
             this.personSiteId = person.getInt("person_site_id");
             this.personProfilePhotoPath = person.getString("person_profile_photo_path");

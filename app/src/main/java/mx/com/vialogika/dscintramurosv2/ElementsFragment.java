@@ -230,7 +230,9 @@ public class ElementsFragment extends Fragment {
             adapter.notifyDataSetChanged();
         }else{
             filter.addAll(activeGuards);
-            adapter.notifyDataSetChanged();
+            if (adapter != null){
+                adapter.notifyDataSetChanged();
+            }
         }
     }
 
@@ -292,7 +294,7 @@ public class ElementsFragment extends Fragment {
                 currentPhotoPath = path;
                 File saved = new File(path);
                 if (saved.exists()){
-                    Bitmap imagebitmap = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(path),64,64);
+                    Bitmap imagebitmap = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(path),150,250);
                     showNewElementDialog(imagebitmap);
                 }
             }else{
