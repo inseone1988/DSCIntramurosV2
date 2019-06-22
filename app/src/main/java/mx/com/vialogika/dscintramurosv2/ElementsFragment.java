@@ -21,6 +21,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.core.content.FileProvider;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -77,22 +78,22 @@ public class ElementsFragment extends Fragment {
 
     public static final int REQUEST_IMAGE_CAPTURE = 16143;
 
-    public static final  String ACTIVE_ELEMENTS = "Activo";
-    public static final  String BAJA_ELEMENTS   = "Baja";
-    private static final String ARG_PARAM1      = "param1";
-    private static final String ARG_PARAM2      = "param2";
+    public static final String ACTIVE_ELEMENTS = "Activo";
+    public static final String BAJA_ELEMENTS = "Baja";
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
-    private RecyclerView               rv;
-    private RecyclerView.Adapter       adapter;
+    private RecyclerView rv;
+    private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
 
-    private List<Guard>        filter       = new ArrayList<>();
-    private List<Guard>        activeGuards = new ArrayList<>();
-    private List<Guard>        bajaGuards   = new ArrayList<>();
+    private List<Guard> filter = new ArrayList<>();
+    private List<Guard> activeGuards = new ArrayList<>();
+    private List<Guard> bajaGuards = new ArrayList<>();
     private List<CharSequence> gruposStatus = new ArrayList<>();
     private String currentPhotoPath;
 
@@ -100,7 +101,7 @@ public class ElementsFragment extends Fragment {
 
     private DatabaseOperations dbo;
 
-    private Spinner              sp;
+    private Spinner sp;
     private FloatingActionButton addElementDFab;
 
     private UploadStatusDelegate delegate = new UploadStatusDelegate() {
@@ -111,18 +112,18 @@ public class ElementsFragment extends Fragment {
 
         @Override
         public void onError(Context context, UploadInfo uploadInfo, ServerResponse
-        serverResponse, Exception exception) {
+                serverResponse, Exception exception) {
 
         }
 
         @Override
         public void onCompleted(Context context, UploadInfo uploadInfo, ServerResponse serverResponse) {
-            try{
+            try {
                 JSONObject response = new JSONObject(serverResponse.getBodyAsString());
-                if (response.getBoolean("success")){
-                    DatabaseOperations op     = DatabaseOperations.getInstance();
-                    Guard              guard  = new Guard(response.getJSONObject("guard"));
-                    Person             person = new Person(response.getJSONObject("person"));
+                if (response.getBoolean("success")) {
+                    DatabaseOperations op = DatabaseOperations.getInstance();
+                    Guard guard = new Guard(response.getJSONObject("guard"));
+                    Person person = new Person(response.getJSONObject("person"));
                     //This must ocurr only when new guard is saved
                     guard.setGuardPhotoPath(currentPhotoPath);
                     person.setPersonProfilePhotoPath(currentPhotoPath);
@@ -131,7 +132,7 @@ public class ElementsFragment extends Fragment {
                     System.out.println(new String(serverResponse.getBody()));
                     Toast.makeText(GlobalAplication.getAppContext(), "Guardia guardado", Toast.LENGTH_SHORT).show();
                 }
-            }catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -159,7 +160,7 @@ public class ElementsFragment extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static ElementsFragment newInstance(String param1, String param2) {
         ElementsFragment fragment = new ElementsFragment();
-        Bundle           args     = new Bundle();
+        Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
@@ -210,30 +211,33 @@ public class ElementsFragment extends Fragment {
         });
     }
 
-    private void searchGuardByName(String searchString){
-        if (!searchString.equals("")){
-            filter.clear();
-            for (int i = 0; i < activeGuards.size(); i++) {
-                Guard c = activeGuards.get(i);
-                String name = c.getPaersonData().getPersonFullName().toLowerCase();
-                if (name.contains(searchString)){
-                    filter.add(c);
+    private void searchGuardByName(String searchString) {
+        if (adapter != null){
+            if (!searchString.equals("")) {
+                filter.clear();
+                for (int i = 0; i < activeGuards.size(); i++) {
+                    Guard c = activeGuards.get(i);
+                    String name = c.getPaersonData().getPersonFullName().toLowerCase();
+                    if (name.contains(searchString)) {
+                        filter.add(c);
+                    }
                 }
-            }
-            for (int i = 0; i < bajaGuards.size(); i++) {
-                Guard c = bajaGuards.get(i);
-                String name = c.getPaersonData().getPersonFullName().toLowerCase();
-                if (name.contains(searchString)){
-                    filter.add(c);
+                for (int i = 0; i < bajaGuards.size(); i++) {
+                    Guard c = bajaGuards.get(i);
+                    String name = c.getPaersonData().getPersonFullName().toLowerCase();
+                    if (name.contains(searchString)) {
+                        filter.add(c);
+                    }
                 }
-            }
-            adapter.notifyDataSetChanged();
-        }else{
-            filter.addAll(activeGuards);
-            if (adapter != null){
+                adapter.notifyDataSetChanged();
+            } else {
+                filter.addAll(activeGuards);
                 adapter.notifyDataSetChanged();
             }
+        }else{
+            Toast.makeText(getContext(), "Cargando...", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     private View.OnClickListener listener = new View.OnClickListener() {
@@ -250,22 +254,22 @@ public class ElementsFragment extends Fragment {
         }
     };
 
-    private void takePicture(){
-        Intent intent = new Intent(getContext(),GuardPhotoTake.class);
-        startActivityForResult(intent,REQUEST_IMAGE_CAPTURE);
+    private void takePicture() {
+        Intent intent = new Intent(getContext(), GuardPhotoTake.class);
+        startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch(requestCode){
+        switch (requestCode) {
             case Setup.REQUEST_CAMERA_PERMISSION:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     takePicture();
-                }else {
+                } else {
                     new AlertDialog.Builder(getContext())
                             .setTitle("Permisos requeridos")
                             .setMessage("No se puede dar de alta sin el permiso de usar la camara, intente nuevamente otorgando los permisos solicitados")
-                            .setPositiveButton(android.R.string.ok,null)
+                            .setPositiveButton(android.R.string.ok, null)
                             .show();
                 }
                 break;
@@ -273,37 +277,37 @@ public class ElementsFragment extends Fragment {
 
     }
 
-    private File createImageFIle()throws IOException{
+    private File createImageFIle() throws IOException {
         String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(new Date());
         String imageFileName = "DSCProfile_" + timestamp + "_";
         File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        if (!storageDir.exists()){
+        if (!storageDir.exists()) {
             storageDir.mkdir();
         }
-        File image = File.createTempFile(imageFileName,".jpg",storageDir);
+        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
         currentPhotoPath = image.getAbsolutePath();
         return image;
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             String path = extras.getString("path");
-            if (path != null && !path.equals("")){
+            if (path != null && !path.equals("")) {
                 currentPhotoPath = path;
                 File saved = new File(path);
-                if (saved.exists()){
-                    Bitmap imagebitmap = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(path),150,250);
+                if (saved.exists()) {
+                    Bitmap imagebitmap = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(path), 150, 250);
                     showNewElementDialog(imagebitmap);
                 }
-            }else{
+            } else {
                 Toast.makeText(getContext(), "Ocurrio un error al crear la imagen", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    private void showNewElementDialog(Bitmap thumb){
+    private void showNewElementDialog(Bitmap thumb) {
         final NewGuardDialog dialog = new NewGuardDialog();
         dialog.setProfileImage(thumb);
         dialog.setCallback(new NewGuardDialog.NewGuardCallback() {
@@ -320,10 +324,10 @@ public class ElementsFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             }
         });
-        dialog.show(getActivity().getSupportFragmentManager(),"NEW_GUARD");
+        dialog.show(getActivity().getSupportFragmentManager(), "NEW_GUARD");
     }
 
-    public void editGuard(int position){
+    public void editGuard(int position) {
         Guard edit = filter.get(position);
         NewGuardDialog dialog = new NewGuardDialog();
         dialog.setGuard(edit);
@@ -338,13 +342,13 @@ public class ElementsFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             }
         });
-        dialog.show(getActivity().getSupportFragmentManager(),"NEW_GUARD");
+        dialog.show(getActivity().getSupportFragmentManager(), "NEW_GUARD");
     }
 
-    private void saveNewGuard(Guard guard){
+    private void saveNewGuard(Guard guard) {
         filter.add(guard);
         adapter.notifyDataSetChanged();
-        NetworkOperations.getInstance().saveGuard(guard,delegate);
+        NetworkOperations.getInstance().saveGuard(guard, delegate);
         //dbo.saveNewGuard(guard);
     }
 
@@ -353,12 +357,12 @@ public class ElementsFragment extends Fragment {
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             String selected = sp.getSelectedItem().toString();
             if (selected.equals(ACTIVE_ELEMENTS)) {
-                if (adapter != null){
+                if (adapter != null) {
                     displayActiveguards();
                 }
             }
-            if (selected.equals(BAJA_ELEMENTS)){
-                if (adapter != null){
+            if (selected.equals(BAJA_ELEMENTS)) {
+                if (adapter != null) {
                     displayBajaGuards();
                 }
             }
