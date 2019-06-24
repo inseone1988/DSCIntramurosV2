@@ -320,7 +320,7 @@ public class NetworkOperations {
         }
     }
 
-    public void updateGuard(final Guard guard,final SimpleNetworkCallback<Integer> cb){
+    public void updateGuard(final Guard guard,final SimpleNetworkCallback<Boolean> cb){
         JSONObject params = new JSONObject();
         try{
             params.put("function","updateGuard");
@@ -332,6 +332,7 @@ public class NetworkOperations {
                         if (response.getBoolean("success")){
                             guard.save();
                         }
+                        cb.onResponse(response.getBoolean("success"));
                     }catch(JSONException e){
                         e.printStackTrace();
                     }

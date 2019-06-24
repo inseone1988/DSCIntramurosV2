@@ -112,7 +112,7 @@ public class Setup extends AppCompatActivity {
 
     private void askPermissions(){
         status.setText("Asking required permissions...");
-        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.INTERNET,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_PHONE_STATE},REQUEST_PERMISSION_CODE);
+        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.INTERNET,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_PHONE_STATE,Manifest.permission.CAMERA},REQUEST_PERMISSION_CODE);
     }
 
     private boolean deviceAuthorized(){
@@ -122,7 +122,7 @@ public class Setup extends AppCompatActivity {
 
     private void requestDelay(){
         status.setText("Waiting for app to finish load...");
-        new CountDownTimer(3000,1000){
+        new CountDownTimer(2000,1000){
             @Override
             public void onTick(long millisUntilFinished) {
 

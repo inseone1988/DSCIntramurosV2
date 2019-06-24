@@ -146,14 +146,17 @@ public class NewGuardDialog extends DialogFragment {
     private void saveElement(){
         if (validValues()){
             if (mode.equals(GuardEditMode.EXISTENT_GUARD)){
-                NetworkOperations.getInstance().updateGuard(guard, new NetworkOperations.SimpleNetworkCallback<Integer>() {
+                NetworkOperations.getInstance().updateGuard(guard, new NetworkOperations.SimpleNetworkCallback<Boolean>() {
                     @Override
-                    public void onResponse(Integer response) {
-
+                    public void onResponse(Boolean response) {
+                        if (response){
+                            Toast.makeText(getContext(), "Actualizado correctamente", Toast.LENGTH_SHORT).show();
+                            dismiss();
+                        }
                     }
 
                     @Override
-                    public void onVolleyError(Integer response, VolleyError error) {
+                    public void onVolleyError(Boolean response, VolleyError error) {
 
                     }
                 });
