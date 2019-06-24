@@ -29,6 +29,7 @@ import mx.com.vialogika.dscintramurosv2.R;
 import mx.com.vialogika.dscintramurosv2.Room.Apostamiento;
 import mx.com.vialogika.dscintramurosv2.Room.Guard;
 import mx.com.vialogika.dscintramurosv2.Room.Incidencia;
+import mx.com.vialogika.dscintramurosv2.Room.Person;
 
 public class EditAptsDialog extends DialogFragment {
     private Spinner            incidenceSpinner;
@@ -206,7 +207,10 @@ public class EditAptsDialog extends DialogFragment {
             apNamesList.add(apostamientos.get(i).getPlantillaPlaceApostamientoName());
         }
         for (int i = 0; i < guards.size(); i++) {
-            guardNamesList.add(guards.get(i).getPaersonData().getPersonFullName());
+            boolean pIsNotNull = guards.get(i).getPaersonData() != null;
+            if (pIsNotNull){
+                guardNamesList.add(guards.get(i).getPaersonData().getPersonFullName());
+            }
         }
     }
 

@@ -50,6 +50,7 @@ public class Setup extends AppCompatActivity {
         if (grantResults.length > 0){
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED ){
                 hasAllPermissions = true;
+                getDeviceData();
             }else{
                 new AlertDialog.Builder(this)
                         .setTitle(R.string.app_permissions)
