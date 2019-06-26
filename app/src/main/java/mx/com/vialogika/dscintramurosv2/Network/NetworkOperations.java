@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
+
 import androidx.annotation.Nullable;
 
 import android.util.Log;
@@ -56,8 +57,8 @@ public class NetworkOperations {
     public static final String MODE_SYNC                = "mode_sync";
     public static final String MODE_SEND                = "mode_send";
     public static final int    SEND_PLANTILLA_TO_SERVER = 154879;
-    public static final String SERVER_URL_PREFIX        = "https://www.vialogika.com.mx/dscic/";
-    //public static final String SERVER_URL_PREFIX        = "http://192.168.2.2/dscic/";
+    //public static final String SERVER_URL_PREFIX        = "https://www.vialogika.com.mx/dscic/";
+    public static final String SERVER_URL_PREFIX        = "http://192.168.2.2/dscic/";
     //public static final String SERVER_URL_PREFIX        = "http://192.168.0.3/dscic/";
     public static final String DEFAULT_HANDLER          = "raw.php";
 
@@ -86,7 +87,7 @@ public class NetworkOperations {
         return instance;
     }
 
-    private String defaultURL() {
+    private static String defaultURL() {
         return SERVER_URL_PREFIX + DEFAULT_HANDLER;
     }
 
@@ -132,18 +133,18 @@ public class NetworkOperations {
         ServerRequest request = new ServerRequest(Request.Method.POST, defaultURL(), params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                try{
-                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GlobalAplication.getAppContext());
-                    SharedPreferences.Editor editor = preferences.edit();
-                    JSONObject userdata = response.getJSONObject("user_data");
-                    editor.putString(UserKeys.SP_USER_FULLNAME,userdata.getString("user_fullname"));
-                    editor.putString(UserKeys.SP_PROVIDER,userdata.getString("user_provider"));
-                    editor.putString(UserKeys.SP_ROLE,userdata.getString("user_role"));
-                    editor.putString(UserKeys.SP_SITE,userdata.getString("user_site"));
-                    editor.putInt(UserKeys.SP_SITE_ID,userdata.getInt("user_site_id"));
-                    editor.putInt(UserKeys.SP_PROVIDER_ID,userdata.getInt("user_provider_id"));
+                try {
+                    SharedPreferences        preferences = PreferenceManager.getDefaultSharedPreferences(GlobalAplication.getAppContext());
+                    SharedPreferences.Editor editor      = preferences.edit();
+                    JSONObject               userdata    = response.getJSONObject("user_data");
+                    editor.putString(UserKeys.SP_USER_FULLNAME, userdata.getString("user_fullname"));
+                    editor.putString(UserKeys.SP_PROVIDER, userdata.getString("user_provider"));
+                    editor.putString(UserKeys.SP_ROLE, userdata.getString("user_role"));
+                    editor.putString(UserKeys.SP_SITE, userdata.getString("user_site"));
+                    editor.putInt(UserKeys.SP_SITE_ID, userdata.getInt("user_site_id"));
+                    editor.putInt(UserKeys.SP_PROVIDER_ID, userdata.getInt("user_provider_id"));
                     editor.apply();
-                }catch(JSONException e){
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 cb.onResponse(response);
@@ -301,16 +302,16 @@ public class NetworkOperations {
         });
     }
 
-    public void saveGuard(Guard guard,UploadStatusDelegate delegate) {
+    public void saveGuard(Guard guard, UploadStatusDelegate delegate) {
         try {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GlobalAplication.getAppContext());
-            String apikey = preferences.getString(UserKeys.SP_API_KEY,"");
+            String            apikey      = preferences.getString(UserKeys.SP_API_KEY, "");
             new MultipartUploadRequest(GlobalAplication.getAppContext(), guardProfilePhotoHandler())
-                    .addHeader("bearer",apikey)
+                    .addHeader("bearer", apikey)
                     .addFileToUpload(guard.getGuardPhotoPath(), "profile_photo")
-                    .addParameter("function","saveProfilePhoto")
-                    .addParameter("guard",guard.toJSONObject().toString())
-                    .addParameter("person",guard.getPaersonData().toJSONObject().toString())
+                    .addParameter("function", "saveProfilePhoto")
+                    .addParameter("guard", guard.toJSONObject().toString())
+                    .addParameter("person", guard.getPaersonData().toJSONObject().toString())
                     .setNotificationConfig(new UploadNotificationConfig())
                     .setMaxRetries(3)
                     .setDelegate(delegate)
@@ -320,20 +321,20 @@ public class NetworkOperations {
         }
     }
 
-    public void updateGuard(final Guard guard,final SimpleNetworkCallback<Boolean> cb){
+    public void updateGuard(final Guard guard, final SimpleNetworkCallback<Boolean> cb) {
         JSONObject params = new JSONObject();
-        try{
-            params.put("function","updateGuard");
-            params.put("person",guard.getPaersonData().toJSONObject());
+        try {
+            params.put("function", "updateGuard");
+            params.put("person", guard.getPaersonData().toJSONObject());
             ServerRequest sr = new ServerRequest(Request.Method.POST, defaultURL(), params, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    try{
-                        if (response.getBoolean("success")){
+                    try {
+                        if (response.getBoolean("success")) {
                             guard.save();
                         }
                         cb.onResponse(response.getBoolean("success"));
-                    }catch(JSONException e){
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
@@ -345,7 +346,7 @@ public class NetworkOperations {
                 }
             });
             rq.add(sr);
-        }catch(JSONException e){
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
@@ -370,7 +371,7 @@ public class NetworkOperations {
                                 vetados.add(gson.fromJson(payload.get(i).toString(), Vetado.class));
                             }
                             cb.onResponse(vetados);
-                        }else{
+                        } else {
                             cb.onResponse(new ArrayList<Vetado>());
                         }
                     } catch (JSONException e) {
@@ -410,21 +411,21 @@ public class NetworkOperations {
         }
     }
 
-    public void getImageFromServer(final Guard guard,@Nullable final SimpleNetworkCallback<Bitmap> cb){
+    public void getImageFromServer(final Guard guard, @Nullable final SimpleNetworkCallback<Bitmap> cb) {
         String url = SERVER_URL_PREFIX + "requesthandler.php";
         ImageRequest ir = new ImageRequest(url, new Response.Listener<Bitmap>() {
             @Override
             public void onResponse(Bitmap response) {
-                try{
+                try {
                     File mFile = FileUtils.createImageFile();
-                    if (FileUtils.saveBitmap(response,mFile, Bitmap.CompressFormat.PNG)){
+                    if (FileUtils.saveBitmap(response, mFile, Bitmap.CompressFormat.PNG)) {
                         guard.setGuardPhotoPath(mFile.getAbsolutePath());
                         guard.save();
                     }
-                }catch(Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-                if (cb != null){
+                if (cb != null) {
                     cb.onResponse(response);
                 }
             }
@@ -433,7 +434,7 @@ public class NetworkOperations {
             public void onErrorResponse(VolleyError error) {
 
             }
-        }){
+        }) {
 
             @Override
             public int getMethod() {
@@ -442,113 +443,144 @@ public class NetworkOperations {
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GlobalAplication.getAppContext());
-                Map<String,String> headers = new HashMap<>();
-                headers.put("bearer",preferences.getString(UserKeys.SP_API_KEY,""));
+                SharedPreferences   preferences = PreferenceManager.getDefaultSharedPreferences(GlobalAplication.getAppContext());
+                Map<String, String> headers     = new HashMap<>();
+                headers.put("bearer", preferences.getString(UserKeys.SP_API_KEY, ""));
                 return headers;
             }
 
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> params = new HashMap<>();
-                params.put("function","profileImage");
-                params.put("path",guard.getGuardPhotoPath());
+                Map<String, String> params = new HashMap<>();
+                params.put("function", "profileImage");
+                params.put("path", guard.getGuardPhotoPath());
                 return params;
             }
         };
         rq.add(ir);
     }
 
-    public void getIncidenceNames(final SimpleNetworkCallback<List<String>> cb){
+    public void getIncidenceNames(final SimpleNetworkCallback<List<String>> cb) {
         JSONObject params = new JSONObject();
-        try{
-            params.put("function","getIncidenceNames");
+        try {
+            params.put("function", "getIncidenceNames");
             ServerRequest request = new ServerRequest(Request.Method.POST, defaultURL(), params, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    try{
-                        if (response.getBoolean("success")){
-                            JSONArray incodencesnames = response.getJSONArray("incident_names");
-                            List<String> inames = new ArrayList<>();
+                    try {
+                        if (response.getBoolean("success")) {
+                            JSONArray    incodencesnames = response.getJSONArray("incident_names");
+                            List<String> inames          = new ArrayList<>();
                             for (int i = 0; i < incodencesnames.length(); i++) {
                                 JSONObject o = incodencesnames.getJSONObject(i);
                                 inames.add(o.getString("incidence_name"));
                             }
                             cb.onResponse(inames);
                         }
-                    }catch(JSONException e){
+                    } catch (JSONException e) {
 
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    cb.onVolleyError(new ArrayList<String>(),error);
+                    cb.onVolleyError(new ArrayList<String>(), error);
                 }
             });
             rq.add(request);
-        }catch(JSONException e ){
+        } catch (JSONException e) {
             e.printStackTrace();
         }
-        }
+    }
 
-        public static void saveIncidence(SiteIncident incident,final SimpleNetworkCallback<JSONObject> cb){
-            try{
-                Context context = GlobalAplication.getAppContext();
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-                MultipartUploadRequest request = new MultipartUploadRequest(context,SERVER_URL_PREFIX + "/requesthandler.php")
-                       .addHeader("bearer",preferences.getString(UserKeys.SP_API_KEY,""))
-                        .addParameter("incident",incident.toJSONObject().toString())
-                        .addParameter("function","saveIncident")
-                        .setMaxRetries(3)
-                        .setNotificationConfig(new UploadNotificationConfig())
-                        .setDelegate(new UploadStatusDelegate() {
-                            @Override
-                            public void onProgress(Context context, UploadInfo uploadInfo) {
+    public static void saveIncidence(SiteIncident incident, final SimpleNetworkCallback<JSONObject> cb) {
+        try {
+            Context           context     = GlobalAplication.getAppContext();
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+            MultipartUploadRequest request = new MultipartUploadRequest(context, SERVER_URL_PREFIX + "/requesthandler.php")
+                    .addHeader("bearer", preferences.getString(UserKeys.SP_API_KEY, ""))
+                    .addParameter("incident", incident.toJSONObject().toString())
+                    .addParameter("function", "saveIncident")
+                    .setMaxRetries(3)
+                    .setNotificationConfig(new UploadNotificationConfig())
+                    .setDelegate(new UploadStatusDelegate() {
+                        @Override
+                        public void onProgress(Context context, UploadInfo uploadInfo) {
 
-                            }
+                        }
 
-                            @Override
-                            public void onError(Context context, UploadInfo uploadInfo, ServerResponse serverResponse, Exception exception) {
-                                Toast.makeText(context, exception.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
+                        @Override
+                        public void onError(Context context, UploadInfo uploadInfo, ServerResponse serverResponse, Exception exception) {
+                            Toast.makeText(context, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
 
-                            @Override
-                            public void onCompleted(Context context, UploadInfo uploadInfo, ServerResponse serverResponse) {
-                                try{
-                                    JSONObject response = new JSONObject(serverResponse.getBodyAsString());
-                                    if (response.getBoolean("success")){
-                                        cb.onResponse(response);
-                                    }
-                                }catch(Exception e){
-                                    e.printStackTrace();
+                        @Override
+                        public void onCompleted(Context context, UploadInfo uploadInfo, ServerResponse serverResponse) {
+                            try {
+                                JSONObject response = new JSONObject(serverResponse.getBodyAsString());
+                                if (response.getBoolean("success")) {
+                                    cb.onResponse(response);
                                 }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
+                        }
 
-                            @Override
-                            public void onCancelled(Context context, UploadInfo uploadInfo) {
-                                Toast.makeText(context, "La subida de la incidencia ha sido cancelada", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                String[] evidencePaths = incident.getEventEvidence().split(",");
-                String[] signaturePaths = incident.getEventSignature().split(",");
-                for (int i = 0; i < evidencePaths.length; i++) {
-                    String c = evidencePaths[i];
-                    if (!c.equals("")){
-                        request.addFileToUpload(c,"DSCEvidence_" + (System.currentTimeMillis()));
-                    }
+                        @Override
+                        public void onCancelled(Context context, UploadInfo uploadInfo) {
+                            Toast.makeText(context, "La subida de la incidencia ha sido cancelada", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            String[] evidencePaths  = incident.getEventEvidence().split(",");
+            String[] signaturePaths = incident.getEventSignature().split(",");
+            for (int i = 0; i < evidencePaths.length; i++) {
+                String c = evidencePaths[i];
+                if (!c.equals("")) {
+                    request.addFileToUpload(c, "DSCEvidence_" + (System.currentTimeMillis()));
                 }
-                for (int i = 0; i < signaturePaths.length; i++) {
-                    String s = signaturePaths[i];
-                    if (!s.equals("")){
-                        request.addFileToUpload(s,"DSCSignature_"+ (System.currentTimeMillis()));
-                    }
-                }
-                request.startUpload();
-            }catch(Exception e){
-
             }
+            for (int i = 0; i < signaturePaths.length; i++) {
+                String s = signaturePaths[i];
+                if (!s.equals("")) {
+                    request.addFileToUpload(s, "DSCSignature_" + (System.currentTimeMillis()));
+                }
+            }
+            request.startUpload();
+        } catch (Exception e) {
+
         }
+    }
+
+    public static void disableGuard(Guard guard,final SimpleNetworkCallback<JSONObject> cb) {
+        try {
+            JSONObject params = new JSONObject();
+            params.put("function", "disableGuard");
+            params.put("guard",guard.toJSONObject());
+            ServerRequest request = new ServerRequest(Request.Method.POST, defaultURL(), params, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try{
+                        if(response.getBoolean("success")){
+                            cb.onResponse(response);
+                            System.out.println("Se ha borrado un guardia por inconsistencia");
+                        }else {
+                            Toast.makeText(GlobalAplication.getAppContext(), "No se pudo borrar al guardia correctamente, intente de nuevo mas tarde", Toast.LENGTH_SHORT).show();
+                        }
+                    }catch(JSONException e){
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+            rq.add(request);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     public interface NetworkRequestCallbacks<T> {

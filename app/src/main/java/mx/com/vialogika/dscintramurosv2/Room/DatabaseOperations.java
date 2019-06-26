@@ -7,6 +7,7 @@ import android.os.Looper;
 import androidx.annotation.Nullable;
 import android.util.Log;
 
+import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Locale;
 
 import mx.com.vialogika.dscintramurosv2.GlobalAplication;
+import mx.com.vialogika.dscintramurosv2.Network.NetworkOperations;
 import mx.com.vialogika.dscintramurosv2.Utils.CryptoHash;
 import mx.com.vialogika.dscintramurosv2.Utils.TimeUtils;
 
@@ -322,23 +324,33 @@ public class DatabaseOperations {
     }
 
     public void updateGuard(final Guard guard,@Nullable final UIThreadOperation cb){
-        new Thread(new Runnable() {
+        NetworkOperations.disableGuard(guard, new NetworkOperations.SimpleNetworkCallback<JSONObject>() {
             @Override
-            public void run() {
-                final int saved = db.guardDao().update(guard);
-                if (guard.getPaersonData() != null){
-                    updatePerson(guard.getPaersonData());
-                }
-                getHandler().post(new Runnable() {
+            public void onResponse(JSONObject response) {
+                new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        if (cb != null){
-                            cb.onOperationFinished(saved);
+                        final int saved = db.guardDao().update(guard);
+                        if (guard.getPaersonData() != null){
+                            updatePerson(guard.getPaersonData());
                         }
+                        getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (cb != null){
+                                    cb.onOperationFinished(saved);
+                                }
+                            }
+                        });
                     }
-                });
+                }).start();
             }
-        }).start();
+
+            @Override
+            public void onVolleyError(JSONObject response, VolleyError error) {
+
+            }
+        });
     }
 
     public  void updatePerson(final Person person){

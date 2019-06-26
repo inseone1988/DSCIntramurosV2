@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Database;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -131,6 +132,11 @@ public class PlantillaEdit extends AppCompatActivity {
     private Guard getAlreadyAsignedGuardByHash(String hash) {
         for (int i = 0; i < guards.size(); i++) {
             Guard current = guards.get(i);
+            if(current.getGuardHash() == null){
+                current.setGuardStatus(0);
+                current.save();
+                continue;
+            }
             if (current.getGuardHash().equals(hash)) {
                 current.setAsigned(true);
                 return current;
