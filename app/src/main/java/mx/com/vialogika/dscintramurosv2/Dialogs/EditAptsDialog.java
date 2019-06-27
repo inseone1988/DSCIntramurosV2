@@ -106,6 +106,10 @@ public class EditAptsDialog extends DialogFragment {
     }
 
     private boolean validateAsignment(){
+        if (guardautocomplete.getText().toString().equals("") || apostamientoAutocomplete.getText().toString().equals("")){
+            displayWarnMessage("Llene todos los campos");
+            return false;
+        }
         if (gId == 0){
             displayWarnMessage("Guardia Invalido");
             return false;

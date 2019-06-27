@@ -57,8 +57,8 @@ public class NetworkOperations {
     public static final String MODE_SYNC                = "mode_sync";
     public static final String MODE_SEND                = "mode_send";
     public static final int    SEND_PLANTILLA_TO_SERVER = 154879;
-    //public static final String SERVER_URL_PREFIX        = "https://www.vialogika.com.mx/dscic/";
-    public static final String SERVER_URL_PREFIX        = "http://192.168.2.2/dscic/";
+    public static final String SERVER_URL_PREFIX        = "https://www.vialogika.com.mx/dscic/";
+    //public static final String SERVER_URL_PREFIX        = "http://192.168.2.2/dscic/";
     //public static final String SERVER_URL_PREFIX        = "http://192.168.0.3/dscic/";
     public static final String DEFAULT_HANDLER          = "raw.php";
 
