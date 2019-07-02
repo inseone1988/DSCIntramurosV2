@@ -59,7 +59,9 @@ public class NewGuardDialog extends DialogFragment {
             person = new Person();
         }else{
             person = guard.getPaersonData();
-            downloadProfileImage();
+            if(!guard.hasLocalProfilePhoto()){
+                downloadProfileImage();
+            }
         }
         getitems(rootview);
         setProfileimage();

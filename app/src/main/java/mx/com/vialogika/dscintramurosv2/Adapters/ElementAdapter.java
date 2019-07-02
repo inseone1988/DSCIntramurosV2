@@ -1,12 +1,15 @@
 package mx.com.vialogika.dscintramurosv2.Adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,10 +17,16 @@ import android.widget.Toast;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.VolleyError;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.List;
 
 import mx.com.vialogika.dscintramurosv2.ElementAdapterOnClickListener;
+import mx.com.vialogika.dscintramurosv2.Network.NetworkOperations;
 import mx.com.vialogika.dscintramurosv2.R;
 import mx.com.vialogika.dscintramurosv2.Room.Guard;
 
@@ -38,6 +47,7 @@ public class ElementAdapter extends RecyclerView.Adapter<ElementAdapter.ElementV
         CardView  elementcardView;
         ImageView profilePicholder;
         TextView  elementName, elmentPosition, elementCreated,elementStatus;
+        ImageButton deleteElement;
         public ElementViewHolder(@NonNull View itemView) {
             super(itemView);
             elementcardView = itemView.findViewById(R.id.element_card_view);
@@ -46,6 +56,7 @@ public class ElementAdapter extends RecyclerView.Adapter<ElementAdapter.ElementV
             elmentPosition = itemView.findViewById(R.id.position);
             elementCreated = itemView.findViewById(R.id.created);
             elementStatus = itemView.findViewById(R.id.status);
+            deleteElement = itemView.findViewById(R.id.deleteguard);
         }
     }
 
@@ -82,10 +93,31 @@ public class ElementAdapter extends RecyclerView.Adapter<ElementAdapter.ElementV
                 }
             }
         });
+        elementViewHolder.deleteElement.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteElement(current);
+            }
+        });
     }
 
     private String setElementStatus(int status){
         return status == 1 ? "Activo" : "Baja";
+    }
+
+    private void deleteElement(final Guard guard){
+        guard.setGuardStatus(0);
+        new AlertDialog.Builder(getContext())
+                .setTitle("Dar de baja")
+                .setMessage("¿Dar de baja elemento?")
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        guard.save();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel,null)
+                .show();
     }
 
     private boolean photoExists(String path){

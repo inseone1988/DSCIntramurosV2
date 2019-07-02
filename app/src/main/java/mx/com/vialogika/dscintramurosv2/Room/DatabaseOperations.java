@@ -324,9 +324,9 @@ public class DatabaseOperations {
     }
 
     public void updateGuard(final Guard guard,@Nullable final UIThreadOperation cb){
-        NetworkOperations.disableGuard(guard, new NetworkOperations.SimpleNetworkCallback<JSONObject>() {
+        NetworkOperations.updateGuard(guard, new NetworkOperations.SimpleNetworkCallback<Boolean>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(Boolean response) {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -347,7 +347,7 @@ public class DatabaseOperations {
             }
 
             @Override
-            public void onVolleyError(JSONObject response, VolleyError error) {
+            public void onVolleyError(Boolean response, VolleyError error) {
 
             }
         });

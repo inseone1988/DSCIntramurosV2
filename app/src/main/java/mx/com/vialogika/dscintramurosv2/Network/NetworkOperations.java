@@ -321,11 +321,12 @@ public class NetworkOperations {
         }
     }
 
-    public void updateGuard(final Guard guard, final SimpleNetworkCallback<Boolean> cb) {
+    public static void updateGuard(final Guard guard, final SimpleNetworkCallback<Boolean> cb) {
         JSONObject params = new JSONObject();
         try {
             params.put("function", "updateGuard");
             params.put("person", guard.getPaersonData().toJSONObject());
+            params.put("guard",guard.toJSONObject());
             ServerRequest sr = new ServerRequest(Request.Method.POST, defaultURL(), params, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
@@ -562,7 +563,6 @@ public class NetworkOperations {
                     try{
                         if(response.getBoolean("success")){
                             cb.onResponse(response);
-                            System.out.println("Se ha borrado un guardia por inconsistencia");
                         }else {
                             Toast.makeText(GlobalAplication.getAppContext(), "No se pudo borrar al guardia correctamente, intente de nuevo mas tarde", Toast.LENGTH_SHORT).show();
                         }

@@ -3,12 +3,14 @@ package mx.com.vialogika.dscintramurosv2;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,6 +39,7 @@ import mx.com.vialogika.dscintramurosv2.Room.Incidencia;
 import mx.com.vialogika.dscintramurosv2.Room.Plantilla;
 import mx.com.vialogika.dscintramurosv2.Utils.CryptoHash;
 import mx.com.vialogika.dscintramurosv2.Utils.TimeUtils;
+import mx.com.vialogika.dscintramurosv2.Utils.UserKeys;
 
 public class PlantillaEdit extends AppCompatActivity {
 
@@ -237,23 +240,45 @@ public class PlantillaEdit extends AppCompatActivity {
 
     private void addApostamiento(int gid, int apid, Incidencia incidencia) {
         Guard g = getGuardById(gid);
-        //TODO: Obtener provedor y site por SP
-        Plantilla plantilla = new Plantilla();
-        plantilla.setId(TimeUtils.unixWithSalt());
-        plantilla.setEdoFuerzaProviderId("1");
-        plantilla.setEdoFuerzaSiteId("1");
-        plantilla.setEdoFuerzaGuardId(CryptoHash.sha1(String.valueOf(gid)));
-        plantilla.setEdoFuerzaPlaceId(String.valueOf(apid));
-        plantilla.setEdoFuerzaTurno(grupo);
-        plantilla.setEdoFuerzaTiempo(turno);
-        plantilla.setEdoFuerzaGuardJob(g.getGuardRange());
-        plantilla.setEdoFuerzaDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).format(new Date()));
-        savePlantillaPlace(plantilla);
-        addGuardToView(apid, gid);
-        if (incidencia.isValidIncidence()) {
-            plantilla.setEdoFuerzaIncidenceId(incidencia.getProviderIncidencesUuid());
-            saveIncidence(incidencia);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        int siteId = preferences.getInt(UserKeys.SP_SITE_ID,0);
+        int providerId = preferences.getInt(UserKeys.SP_PROVIDER_ID,0);
+        if (siteId != 0 && providerId != 0){
+            //TODO: Obtener provedor y site por SP .-DONE 01-07-2019
+            Plantilla plantilla = new Plantilla();
+            plantilla.setId(TimeUtils.unixWithSalt());
+            plantilla.setEdoFuerzaProviderId("1");
+            plantilla.setEdoFuerzaSiteId("1");
+            plantilla.setEdoFuerzaGuardId(CryptoHash.sha1(String.valueOf(gid)));
+            plantilla.setEdoFuerzaPlaceId(String.valueOf(apid));
+            plantilla.setEdoFuerzaTurno(grupo);
+            plantilla.setEdoFuerzaTiempo(turno);
+            plantilla.setEdoFuerzaGuardJob(g.getGuardRange());
+            plantilla.setEdoFuerzaDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).format(new Date()));
+            savePlantillaPlace(plantilla);
+            addGuardToView(apid, gid);
+            if (incidencia.isValidIncidence()) {
+                plantilla.setEdoFuerzaIncidenceId(incidencia.getProviderIncidencesUuid());
+                saveIncidence(incidencia);
+            }
+        }else{
+         new AlertDialog.Builder(this)
+         .setTitle("Error")
+         .setMessage("No se ha podido obtener el el proveedor y site. Reniciando.")
+         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+             @Override
+             public void onClick(DialogInterface dialog, int which) {
+                restart();
+             }
+         })
+         .show();
         }
+    }
+
+    private void restart(){
+        Intent intent = new Intent(this,Setup.class);
+        startActivity(intent);
+        finish();
     }
 
     private void savePlantillaPlace(Plantilla pl) {
