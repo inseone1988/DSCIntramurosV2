@@ -3,6 +3,7 @@ package mx.com.vialogika.dscintramurosv2.Dialogs;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
@@ -169,6 +170,15 @@ public class NewGuardDialog extends DialogFragment {
     }
 
     private void setProfileimage(){
+        if(guard != null && guard.hasLocalProfilePhoto()){
+            Bitmap profilePhoto = BitmapFactory.decodeFile(guard.getGuardPhotoPath());
+            if (profilePhoto != null){
+                profileImageHolder.setImageBitmap(profilePhoto);
+            }else {
+                profileImageHolder.setImageResource(R.drawable.ic_guard);
+            }
+            return;
+        }
         profileImageHolder.setImageBitmap(profileImage);
     }
 
