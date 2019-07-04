@@ -99,6 +99,11 @@ public class ElementAdapter extends RecyclerView.Adapter<ElementAdapter.ElementV
                 deleteElement(current);
             }
         });
+        if(!current.isActive()){
+            elementViewHolder.deleteElement.setVisibility(View.GONE);
+        }else{
+            elementViewHolder.deleteElement.setVisibility(View.VISIBLE);
+        }
     }
 
     private String setElementStatus(int status){

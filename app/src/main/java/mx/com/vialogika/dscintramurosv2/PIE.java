@@ -213,7 +213,7 @@ public class PIE extends Fragment {
                     new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
                         @Override
                         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                            String hourformat = hourOfDay + " : " + minute;
+                            String hourformat = hourOfDay + ":" + minute+":00";
                             hora.setText(hourformat);
                         }
                     },c.get(Calendar.HOUR_OF_DAY),c.get(Calendar.MINUTE),true).show();
@@ -408,15 +408,16 @@ public class PIE extends Fragment {
         //Event when is redundant
         //TODO:Make a methos to get pictures and signatures
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        incident.setEventCaptureTimestamp(TimeUtils.nowToString("yyyy-MM-dd"));
+        incident.setEventCaptureTimestamp(TimeUtils.nowToString("yyyy-MM-dd HH:mm:ss"));
         incident.setEventDate(fecha.getText().toString());
         incident.setEventTime(hora.getText().toString());
         incident.setEventName(incidentInput.getSelectedItem().toString());
         incident.setEventRiskLevel(incidenceType.toSTring());
         incident.setEventResponsable(responsableIdentifiedInput.isChecked() ? "si":"no");
         incident.setEventWhat(eventWhatInput.getText().toString());
-        incident.setEventHow(eventWhatInput.getText().toString());
-        incident.setEventWhere(evetDescriptionInput.getText().toString());
+        incident.setEventHow(eventHowInput.getText().toString());
+        incident.setEventWhere(eventWhereInput.getText().toString());
+        incident.setEventFacts(evetDescriptionInput.getText().toString());
         incident.setEventUser(completeNameReports.getText().toString());
         incident.setEventUserSite(String.valueOf(preferences.getInt(UserKeys.SP_SITE_ID,0)));
         incident.setEventEditStatus(true);
